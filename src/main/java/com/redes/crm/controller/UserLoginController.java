@@ -65,7 +65,7 @@ public class UserLoginController {
     	try {
     		TokenGenerate token = new TokenGenerate();
     		
-    		String responseToken = token.generateToken(user);
+    		String responseToken = token.generateToken(userExist.get());
     		
             Response response = new Response(false, responseToken);
     		

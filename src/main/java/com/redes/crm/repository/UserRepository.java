@@ -12,4 +12,6 @@ import com.redes.crm.model.User;
 public interface UserRepository extends JpaRepository<User, Long>{
 //	Aqui fornece uma implementação em tempo de execução
 	Optional<User> findByEmail(String string);
+	
+	Optional<User> findById(Long id);
 }

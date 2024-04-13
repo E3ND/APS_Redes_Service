@@ -35,7 +35,7 @@ public class Chat {
 	
 	@ManyToOne
     @JoinColumn(name = "conversationId")
-	private Long conversationId;
+	private Conversation conversationId;
 	
 	
 	private Date createdAt;
@@ -69,11 +69,11 @@ public class Chat {
 		this.message = message;
 	}
 
-	public Long getConversationId() {
+	public Conversation getConversationId() {
 		return conversationId;
 	}
 
-	public void setConversationId(Long conversationId) {
+	public void setConversationId(Conversation conversationId) {
 		this.conversationId = conversationId;
 	}
 

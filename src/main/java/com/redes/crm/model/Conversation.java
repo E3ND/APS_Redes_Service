@@ -1,5 +1,6 @@
 package com.redes.crm.model;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -8,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -26,11 +28,18 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-    @OneToMany(mappedBy = "conversation")
+    @OneToMany(mappedBy = "conversationId")
     private List<Chat> chat;
     
-    @OneToMany(mappedBy = "conversation")
+    @OneToMany(mappedBy = "conversationId")
     private List<ChatUser> chatUser;
+    
+    private Date createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        setCreatedAt(new Date());
+    }
 
 	public Long getId() {
 		return id;
@@ -46,6 +55,14 @@ public class Conversation {
 
 	public void setChat(List<Chat> chat) {
 		this.chat = chat;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
     
     

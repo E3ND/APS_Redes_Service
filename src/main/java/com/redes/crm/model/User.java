@@ -1,5 +1,6 @@
 package com.redes.crm.model;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Email;
@@ -10,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
@@ -43,11 +45,21 @@ public class User {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
-    @OneToMany(mappedBy = "user")
-    private List<Chat> chat;
+    @OneToMany(mappedBy = "senderId")
+    private List<Chat> sender;
     
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "recipientId")
+    private List<Chat> recipient;
+    
+    @OneToMany(mappedBy = "userId")
     private List<ChatUser> chatUser;
+    
+    private Date createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        setCreatedAt(new Date());
+    }
 
 	public Long getId() {
 		return id;
@@ -79,5 +91,13 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 }

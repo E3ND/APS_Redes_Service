@@ -3,6 +3,8 @@ package com.redes.crm.model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,9 +30,11 @@ public class Conversation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@JsonIgnore
     @OneToMany(mappedBy = "conversationId")
     private List<Chat> chat;
     
+	@JsonIgnore
     @OneToMany(mappedBy = "conversationId")
     private List<ChatUser> chatUser;
     

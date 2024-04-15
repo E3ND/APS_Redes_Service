@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.Email;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,12 +47,15 @@ public class User {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
+	@JsonIgnore
     @OneToMany(mappedBy = "senderId")
-    private List<Chat> sender;
+    private List<Chat> senderId;
     
+	@JsonIgnore
     @OneToMany(mappedBy = "recipientId")
-    private List<Chat> recipient;
+    private List<Chat> recipientId;
     
+	@JsonIgnore
     @OneToMany(mappedBy = "userId")
     private List<ChatUser> chatUser;
     
@@ -100,4 +105,30 @@ public class User {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public List<Chat> getSenderId() {
+		return senderId;
+	}
+
+	public void setSenderId(List<Chat> senderId) {
+		this.senderId = senderId;
+	}
+
+	public List<Chat> getRecipientId() {
+		return recipientId;
+	}
+
+	public void setRecipientId(List<Chat> recipientId) {
+		this.recipientId = recipientId;
+	}
+
+	public List<ChatUser> getChatUser() {
+		return chatUser;
+	}
+
+	public void setChatUser(List<ChatUser> chatUser) {
+		this.chatUser = chatUser;
+	}
+	
+	
 }

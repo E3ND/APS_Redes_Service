@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.redes.crm.dto.ConversationDto;
+import com.redes.crm.dto.FindAllConversationsDto;
+import com.redes.crm.dto.FindByUserIdAndRecipientIdDto;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;
@@ -42,6 +43,38 @@ public class ChatController {
     private ConversationRepository conversationRepository;
     @Autowired
     private ChatUserRepository chatUserRepository;
+    
+    @GetMapping("/conversation")
+    public ResponseEntity<Object> getAllUserConversation (@RequestHeader("Authorization") String token) {
+    	GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+		
+		TokenGenerate tokenGenerate = new TokenGenerate();
+		
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Long userId = tokenGenerate.extractUserId(existToken);
+		
+		Optional<User> user = userRepository.findById(userId);
+		
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, user.get());
+		
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		List<FindAllConversationsDto> conversations = conversationRepository.findAllConversations(userId);
+		
+		Response response = new Response(false, conversations);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
 	@PostMapping("/create/{recipientId}")
 	public ResponseEntity<Object> CreateMessage (@RequestBody Chat chat, @PathVariable Long recipientId, @RequestHeader("Authorization") String token) {
@@ -77,22 +110,23 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 		}
 		
-		List<ConversationDto> conversations  = conversationRepository.findByUserIdAndRecipientId(user.get().getId(), recipient.get().getId());
+		List<FindByUserIdAndRecipientIdDto> conversations  = conversationRepository.findByUserIdAndRecipientId(user.get().getId(), recipient.get().getId());
 
 		Boolean ThisMessageRecipientExist = false;
 		Long ThisconversationIdRecipient = null;
 
-		for (ConversationDto conversation : conversations) {
+		for (FindByUserIdAndRecipientIdDto conversation : conversations) {
 		    Long userIdChatUser = conversation.getUserId();
+		    Long recipientIdChatUser = conversation.getRecipientId();
 		    Long conversationId = conversation.getConversationId();
 		    
-		    if(userIdChatUser == recipientId) {
+		    if((userIdChatUser == userId && recipientIdChatUser == recipientId) || (userIdChatUser == recipientId && recipientIdChatUser == userId) ) {
 		    	ThisconversationIdRecipient = conversationId;
 		    	ThisMessageRecipientExist = true;
 		    }
 		    
 		}
-		
+
 		if(ThisMessageRecipientExist == false) {
 			Conversation conversation = new Conversation();
 			ChatUser chatUser = new ChatUser();

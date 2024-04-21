@@ -1,5 +1,6 @@
 package com.redes.crm.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.redes.crm.dto.ConversationDto;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;
@@ -68,7 +70,6 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 		}
 		
-		//Create chats MEssage...
 		Optional<User> recipient = userRepository.findById(recipientId);
 		
 		if(!recipient.isPresent()) {
@@ -76,22 +77,33 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 		}
 		
-		Optional<ChatUser> chatUserOptional = chatUserRepository.findByUserId(userId);
-//		Optional<Chat> thisRecipientExistsChat = chatRepository.findFirstBySenderIdAndRecipientId(user.get(), recipient.get());
-//		Optional<Chat> thisSenderExistsChat = chatRepository.findFirstBySenderIdAndRecipientId(recipient.get(), user.get());
+		List<ConversationDto> conversations  = conversationRepository.findByUserIdAndRecipientId(user.get().getId(), recipient.get().getId());
+
+		Boolean ThisMessageRecipientExist = false;
+		Long ThisconversationIdRecipient = null;
+
+		for (ConversationDto conversation : conversations) {
+		    Long userIdChatUser = conversation.getUserId();
+		    Long conversationId = conversation.getConversationId();
+		    
+		    if(userIdChatUser == recipientId) {
+		    	ThisconversationIdRecipient = conversationId;
+		    	ThisMessageRecipientExist = true;
+		    }
+		    
+		}
 		
-		//Não existe um chat com o usuário e o destinatario? Então cria um
-		if(!chatUserOptional.isPresent()) {
+		if(ThisMessageRecipientExist == false) {
 			Conversation conversation = new Conversation();
-			
 			ChatUser chatUser = new ChatUser();
 			ChatUser chatUserRecipient = new ChatUser();
+			
 			chatUser.setConversationId(conversation); 
 			chatUser.setUserId(user.get());
-			
+
 			chatUserRecipient.setConversationId(conversation); 
 			chatUserRecipient.setUserId(recipient.get());
-			
+				
 			Chat chatCreate = new Chat();
 			chatCreate.setConversationId(conversation); 
 			chatCreate.setSenderId(user.get()); 
@@ -101,13 +113,17 @@ public class ChatController {
 			conversationRepository.save(conversation);
 			chatUserRepository.save(chatUser);
 			chatUserRepository.save(chatUserRecipient);
+			
 			chatRepository.save(chatCreate);
 			
 			Response response = new Response(false, chatCreate);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		} else {
 			Chat chatCreate = new Chat();
-			chatCreate.setConversationId(chatUserOptional.get().getConversationId()); 
+			
+			Conversation conversationId = conversationRepository.findConversationById(ThisconversationIdRecipient);
+
+			chatCreate.setConversationId(conversationId); 
 			chatCreate.setSenderId(user.get()); 
 			chatCreate.setRecipientId(recipient.get());
 			chatCreate.setMessage(chat.getMessage());

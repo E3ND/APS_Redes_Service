@@ -58,6 +58,8 @@ public class User {
 	@JsonIgnore
     @OneToMany(mappedBy = "userId")
     private List<ChatUser> chatUser;
+	
+	private String imageName;
     
     private Date createdAt;
     
@@ -128,6 +130,14 @@ public class User {
 
 	public void setChatUser(List<ChatUser> chatUser) {
 		this.chatUser = chatUser;
+	}
+
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 	
 	

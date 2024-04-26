@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.redes.crm.dto.FindAllConversationsDto;
+import com.redes.crm.dto.FindAllmessagesOfConversationDto;
 import com.redes.crm.dto.FindByUserIdAndRecipientIdDto;
+import com.redes.crm.dto.FindChatUserByConversationDto;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;
@@ -27,6 +29,7 @@ import com.redes.crm.model.User;
 import com.redes.crm.repository.ChatRepository;
 import com.redes.crm.repository.ChatUserRepository;
 import com.redes.crm.repository.ConversationRepository;
+import com.redes.crm.dto.FindAllConversationByUserDto;
 import com.redes.crm.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
@@ -44,6 +47,85 @@ public class ChatController {
     @Autowired
     private ChatUserRepository chatUserRepository;
     
+    @GetMapping("/messages/{conversationId}")
+    public ResponseEntity<Object> getAllMessagesConversation (@PathVariable Long conversationId, @RequestHeader("Authorization") String token) {
+    	GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+		
+		TokenGenerate tokenGenerate = new TokenGenerate();
+		
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Long userId = tokenGenerate.extractUserId(existToken);
+		
+		Optional<User> user = userRepository.findById(userId);
+		
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, user.get());
+		
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		List<FindChatUserByConversationDto> findChatUserByConversation = chatUserRepository.findChatUserByConversation(conversationId);
+		
+		Boolean existsConversationWithUser = false;
+		
+		for (FindChatUserByConversationDto conversation : findChatUserByConversation) {
+		    if(conversation.getUserId() == userId) {
+		    	existsConversationWithUser = true;
+		    }
+		}
+		
+		if(existsConversationWithUser == false) {
+			Response response = new Response(true, "Conversa não encontrada");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		}
+		
+		List<FindAllmessagesOfConversationDto> allMessagesOfConversation = chatRepository.findAllmessagesOfConversation(conversationId);
+		
+		Response response = new Response(false, allMessagesOfConversation);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    
+    @GetMapping("/conversation/by-user")
+    public ResponseEntity<Object> getConversationByUser (@RequestHeader("Authorization") String token) {
+    	GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+		
+		TokenGenerate tokenGenerate = new TokenGenerate();
+		
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Long userId = tokenGenerate.extractUserId(existToken);
+		
+		Optional<User> user = userRepository.findById(userId);
+		
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, user.get());
+		
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		List<FindAllConversationByUserDto> findAllConversationByUser = conversationRepository.findAllConversationByUser(userId);
+		
+		Response response = new Response(false, findAllConversationByUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    
+    //Não lembro o Porquê criei isso aqui
     @GetMapping("/conversation")
     public ResponseEntity<Object> getAllUserConversation (@RequestHeader("Authorization") String token) {
     	GetTokenFormat getTokenFormat = new GetTokenFormat();

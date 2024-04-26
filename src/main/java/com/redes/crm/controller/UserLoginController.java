@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.redes.crm.dto.FindAllDto;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.HashPassword;
 import com.redes.crm.helpers.Response;
@@ -40,13 +42,43 @@ public class UserLoginController {
         this.userRepository = userRepository;
         this.hashPassword = hashPassword;
     }
+    
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAll(@RequestHeader("Authorization") String token) {
+		GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+		
+		TokenGenerate tokenGenerate = new TokenGenerate();
+		
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Long userId = tokenGenerate.extractUserId(existToken);
+		
+		Optional<User> userFind = userRepository.findById(userId);
+		
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, userFind.get());
+		
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		List<FindAllDto> allUsers = userRepository.findAllUsers(); 
+		
+		 Response response = new Response(false, allUsers);
+ 		
+ 		return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 //Verificar o a geração do token, deve estar sendo criado com a senha junto
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody User user) {
-        
-    	System.out.println("Email => " + user.getEmail());
-    	System.out.println("Email => " + user.getPassword());
 
     	Optional<User> userExist = userRepository.findByEmail(user.getEmail());
     	

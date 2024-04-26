@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
+import com.redes.crm.dto.FindAllDto;
 import com.redes.crm.model.User;
 
 //Entidade -> tipo do Id
@@ -22,4 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query(nativeQuery = true, value = "UPDATE javinha.user SET user.name = :name, user.password = :password, user.image_name = :imageName "
 			+ "WHERE user.id = :id")
 	void updateUser(@Param("id") Long id, @Param("name") String name, @Param("password") String password, @Param("imageName") String imageName);
+
+	@Query(nativeQuery = true, value = "SELECT user.id as 'id', user.email as 'email', user.name as 'name', user.image_name as 'imageName', " 
+			+ "user.created_at as 'createdAt' FROM javinha.user user")
+	List<FindAllDto> findAllUsers();
 }

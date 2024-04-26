@@ -43,6 +43,8 @@ public class TokenGenerate {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userDetails.getId());
         claims.put("name", userDetails.getName());
+        claims.put("imageName", userDetails.getImageName());
+        claims.put("createdAt", userDetails.getCreatedAt());
         return createToken(claims, userDetails.getEmail());
     }
     

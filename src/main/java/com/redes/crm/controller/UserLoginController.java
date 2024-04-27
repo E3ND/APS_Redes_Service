@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.redes.crm.dto.FindAllDto;
+import com.redes.crm.helpers.GenerateObjUser;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.HashPassword;
 import com.redes.crm.helpers.Response;
@@ -34,7 +35,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/user")
 public class UserLoginController {
 	private HashPassword hashPassword;
-	
+
     @Autowired
     private UserRepository userRepository;
     
@@ -102,7 +103,9 @@ public class UserLoginController {
     		
     		String responseToken = token.generateToken(userExist.get());
     		
-            Response response = new Response(false, responseToken);
+    		GenerateObjUser cenerateObjUser = new GenerateObjUser(existingUser.getId(), existingUser.getName(), existingUser.getImageName(), responseToken);
+    		
+            Response response = new Response(false, cenerateObjUser);
     		
     		return ResponseEntity.status(HttpStatus.OK).body(response);
 		} catch (DataIntegrityViolationException e) {
@@ -136,7 +139,9 @@ public class UserLoginController {
             
             String responseToken = token.generateToken(newUser);
             
-            Response response = new Response(false, responseToken);
+            GenerateObjUser cenerateObjUser = new GenerateObjUser(newUser.getId(), newUser.getName(), newUser.getImageName(), responseToken);
+            
+            Response response = new Response(false, cenerateObjUser);
             
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (DataIntegrityViolationException e) {

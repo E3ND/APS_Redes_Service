@@ -175,6 +175,7 @@ public class ChatController {
 		}
 		
 		Long userId = tokenGenerate.extractUserId(existToken);
+		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		
 		Optional<User> user = userRepository.findById(userId);
 		

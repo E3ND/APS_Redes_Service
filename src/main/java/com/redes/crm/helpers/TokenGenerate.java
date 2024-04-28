@@ -24,19 +24,27 @@ import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+import java.util.Date;
+import java.util.Map;
+
 public class TokenGenerate {
-	//Colocar isso em env depois
-	@Value("OpI3TaszkA8h6xJkNokRXHFpM7s5TdDzmGWg1YVJPz57lWWLvpmMhmsF9rmIm5U8PM8tr4Xk6E9Bm0ed8H592wJX9bqolPdiACni6sccm1f7o6ejyud8Xid0pGtLIF4Z13qsec7vtuK9zpmspCBMzPlk4nabJuwUfyPykZlSsFPdym5XE3KuxGR3KJW7PgKYFqewgzh7")
-    private String secret = "OpI3TaszkA8h6xJkNokRXHFpM7s5TdDzmGWg1YVJPz57lWWLvpmMhmsF9rmIm5U8PM8tr4Xk6E9Bm0ed8H592wJX9bqolPdiACni6sccm1f7o6ejyud8Xid0pGtLIF4Z13qsec7vtuK9zpmspCBMzPlk4nabJuwUfyPykZlSsFPdym5XE3KuxGR3KJW7PgKYFqewgzh7";
-	//Colocar isso em env depois
-    @Value("86400000")
-    private long expiration = 86400000;
-    
     private Key key;
+    
+    //Colocar isso em env depois
+    private static final String SECRET_KEY = "OpI3TaszkA8h6xJkNokRXHFpM7s5TdDzmGWg1YVJPz57lWWLvpmMhmsF9rmIm5U8PM8tr4Xk6E9Bm0ed8H592wJX9bqolPdiACni6sccm1f7o6ejyud8Xid0pGtLIF4Z13qsec7vtuK9zpmspCBMzPlk4nabJuwUfyPykZlSsFPdym5XE3KuxGR3KJW7PgKYFqewgzh7";
+
+    //Colocar isso em env depois
+    private static final long EXPIRATION_TIME = 86400000; 
     
     @PostConstruct
     public void init() {
-    	this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    	this.key = Keys.hmacShaKeyFor(this.SECRET_KEY.getBytes());
     }
     
     public String generateToken(User userDetails) {
@@ -48,11 +56,18 @@ public class TokenGenerate {
         return createToken(claims, userDetails.getEmail());
     }
     
-    private String createToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject)
+    public static String createToken(Map<String, Object> claims, String subject) {
+
+        Key secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), SignatureAlgorithm.HS256.getJcaName());
+
+        JwtBuilder jwtBuilder = Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(secretKey);
+
+        return jwtBuilder.compact();
     }
     
     
@@ -91,12 +106,15 @@ public class TokenGenerate {
     }
 
     private Claims extractAllClaims(String token) {
-    	return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    	return Jwts.parser().setSigningKey(SECRET_KEY.getBytes()).parseClaimsJws(token).getBody();
     }
     
     public boolean validateTokenIntegrity(String token) {
     	try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY.getBytes())
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;

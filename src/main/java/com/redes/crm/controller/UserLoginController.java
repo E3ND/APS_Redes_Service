@@ -233,7 +233,6 @@ public class UserLoginController {
 		System.out.println(updateUserDto.getImage());
 		
 		if(userFind.get().getImageName() != null) {
-			System.out.println("SSSSSSSSSSSSSS");
 			String caminhoImagem = userFind.get().getImageName();
 
 	        File arquivoImagem = new File(caminhoImagem);

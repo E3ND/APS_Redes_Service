@@ -229,8 +229,11 @@ public class UserLoginController {
 		}
 		
 		String imagePath = null;
+		System.out.println(userFind.get().getImageName());
+		System.out.println(updateUserDto.getImage());
 		
 		if(userFind.get().getImageName() != null) {
+			System.out.println("SSSSSSSSSSSSSS");
 			String caminhoImagem = userFind.get().getImageName();
 
 	        File arquivoImagem = new File(caminhoImagem);
@@ -238,13 +241,13 @@ public class UserLoginController {
 	        arquivoImagem.delete();
 		}
 
-	    if (!updateUserDto.getImage().isEmpty()) {
+	    if (updateUserDto.getImage() != null) {
 	    	try {
 		    	String imageNameFull = updateUserDto.getImage().getOriginalFilename();
 		    	int startPoint = imageNameFull.lastIndexOf('.');
 		    	String extendImage = imageNameFull.substring(startPoint + 1);
 		    	
-		    	String imageName = userFind.get().getName() + "_" + String.valueOf(userId) + "_" + System.currentTimeMillis() + "." + extendImage;
+		    	String imageName = updateUserDto.getName() + "_" + String.valueOf(userId) + "_" + System.currentTimeMillis() + "." + extendImage;
 		    	
 		    	File novaPasta = new File("src/main/resources/static/images/perfil/user_" + String.valueOf(userId));
 		    	novaPasta.mkdir();

@@ -229,8 +229,6 @@ public class UserLoginController {
 		}
 		
 		String imagePath = null;
-		System.out.println(userFind.get().getImageName());
-		System.out.println(updateUserDto.getImage());
 		
 		if(userFind.get().getImageName() != null) {
 			String caminhoImagem = userFind.get().getImageName();

@@ -52,6 +52,8 @@ public class Chat {
     protected void onCreate() {
         createdAt = new Date();
     }
+    
+    private String imageName;
 
 	public Long getId() {
 		return id;
@@ -99,6 +101,14 @@ public class Chat {
 
 	public void setRecipientId(User recipientId) {
 		this.recipientId = recipientId;
+	}
+
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 	
 	

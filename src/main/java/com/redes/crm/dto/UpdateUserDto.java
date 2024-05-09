@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class UpdateUserDto implements Serializable{
+public class UpdateUserDto implements Serializable {
     private String name;
 
     private String password;

@@ -1,5 +1,10 @@
 package com.redes.crm.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +25,7 @@ import com.redes.crm.dto.FindAllConversationsDto;
 import com.redes.crm.dto.FindAllmessagesOfConversationDto;
 import com.redes.crm.dto.FindByUserIdAndRecipientIdDto;
 import com.redes.crm.dto.FindChatUserByConversationDto;
+import com.redes.crm.dto.UpdateUserDto;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;
@@ -29,6 +36,7 @@ import com.redes.crm.model.User;
 import com.redes.crm.repository.ChatRepository;
 import com.redes.crm.repository.ChatUserRepository;
 import com.redes.crm.repository.ConversationRepository;
+import com.redes.crm.dto.ChatCreateMessagedto;
 import com.redes.crm.dto.FindAllConversationByUserDto;
 import com.redes.crm.repository.UserRepository;
 
@@ -159,7 +167,7 @@ public class ChatController {
     }
 
 	@PostMapping("/create/{recipientId}")
-	public ResponseEntity<Object> CreateMessage (@RequestBody Chat chat, @PathVariable Long recipientId, @RequestHeader("Authorization") String token) {
+	public ResponseEntity<Object> CreateMessage (@ModelAttribute ChatCreateMessagedto chatCreateMessagedto, @PathVariable Long recipientId, @RequestHeader("Authorization") String token) {
 
 		GetTokenFormat getTokenFormat = new GetTokenFormat();
 
@@ -219,16 +227,42 @@ public class ChatController {
 
 			chatUserRecipient.setConversationId(conversation); 
 			chatUserRecipient.setUserId(recipient.get());
-				
+			
+			Conversation consersationId = conversationRepository.save(conversation);
+			chatUserRepository.save(chatUser);
+			chatUserRepository.save(chatUserRecipient);
+			
+			String imagePath = null;
+			
+			if (chatCreateMessagedto.getImage() != null) {
+		    	try {
+			    	String imageNameFull = chatCreateMessagedto.getImage().getOriginalFilename();
+			    	int startPoint = imageNameFull.lastIndexOf('.');
+			    	String extendImage = imageNameFull.substring(startPoint + 1);
+			    	
+			    	String imageName = System.currentTimeMillis() + "." + extendImage;
+			    	
+			    	File novaPasta = new File("src/main/resources/static/images/chat_" + String.valueOf(consersationId.getId()));
+			    	novaPasta.mkdir();
+			    	
+			        Path path = Paths.get("src/main/resources/static/images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName);
+			        imagePath = "src/main/resources/static/images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName;
+			        
+			        Files.copy(chatCreateMessagedto.getImage().getInputStream(), path);
+			        
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			        Response response = new Response(true, e.getMessage());
+			        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			    }
+		    }
+			
 			Chat chatCreate = new Chat();
 			chatCreate.setConversationId(conversation); 
 			chatCreate.setSenderId(user.get()); 
 			chatCreate.setRecipientId(recipient.get());
-			chatCreate.setMessage(chat.getMessage());
-			
-			conversationRepository.save(conversation);
-			chatUserRepository.save(chatUser);
-			chatUserRepository.save(chatUserRecipient);
+			chatCreate.setMessage(chatCreateMessagedto.getMessage());
+			chatCreate.setImageName(imagePath);
 			
 			chatRepository.save(chatCreate);
 			
@@ -238,11 +272,37 @@ public class ChatController {
 			Chat chatCreate = new Chat();
 			
 			Conversation conversationId = conversationRepository.findConversationById(ThisconversationIdRecipient);
-
+			
+			String imagePath = null;
+			
 			chatCreate.setConversationId(conversationId); 
 			chatCreate.setSenderId(user.get()); 
 			chatCreate.setRecipientId(recipient.get());
-			chatCreate.setMessage(chat.getMessage());
+			chatCreate.setMessage(chatCreateMessagedto.getMessage());
+			chatCreate.setImageName(imagePath);
+			
+			if (chatCreateMessagedto.getImage() != null) {
+		    	try {
+			    	String imageNameFull = chatCreateMessagedto.getImage().getOriginalFilename();
+			    	int startPoint = imageNameFull.lastIndexOf('.');
+			    	String extendImage = imageNameFull.substring(startPoint + 1);
+			    	
+			    	String imageName = System.currentTimeMillis() + "." + extendImage;
+			    	
+			    	File novaPasta = new File("src/main/resources/static/images/chat_" + String.valueOf(conversationId.getId()));
+			    	novaPasta.mkdir();
+
+			        Path path = Paths.get("src/main/resources/static/images/chat_" + String.valueOf(conversationId.getId()) + "/" + imageName);
+			        imagePath = "src/main/resources/static/images/chat_" + String.valueOf(conversationId.getId()) + "/" + imageName;
+			        
+			        Files.copy(chatCreateMessagedto.getImage().getInputStream(), path);
+			        
+			    } catch (IOException e) {
+			        e.printStackTrace();
+			        Response response = new Response(true, e.getMessage());
+			        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			    }
+		    }
 			
 			chatRepository.save(chatCreate);
 			

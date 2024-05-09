@@ -14,7 +14,7 @@ import com.redes.crm.model.User;
 public interface ChatRepository extends JpaRepository<Chat, Long>{
 	Optional<Chat> findFirstBySenderIdAndRecipientId(@Param("sender") User sender, @Param("recipient") User recipient);
 	
-	@Query(nativeQuery = true, value = "SELECT chat.id AS id, chat.message AS message, chat.conversation_id AS conversationId, chat.recipient_id AS recipientId, " 
+	@Query(nativeQuery = true, value = "SELECT chat.id AS id, chat.message AS message, chat.image_name AS imageName, chat.conversation_id AS conversationId, chat.recipient_id AS recipientId, " 
 			+ "chat.sender_id AS senderId, " 
 			+ "chat.created_at AS createdAt, conversation.id AS conversationId, conversation.created_at AS conversationCreatedAt FROM javinha.chat AS chat " 
 			+ "INNER JOIN javinha.conversation AS conversation ON chat.conversation_id = conversation.id " 

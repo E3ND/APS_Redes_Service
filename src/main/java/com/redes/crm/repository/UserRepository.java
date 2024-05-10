@@ -32,5 +32,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	
 	@Query(nativeQuery = true, value = "SELECT u.id as 'id', u.name as 'name', u.email as 'email', u.image_name as 'imageName', u.created_at as 'createdAt' FROM javinha.user AS u WHERE u.id = :userId")
 	List<FindUserByIdDto> findUserById(@Param("userId") Long userId);
-
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM javinha.user AS user WHERE user.id = :userId")
+	User findUser(@Param("userId") Long userId);
 }

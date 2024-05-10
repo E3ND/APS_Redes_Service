@@ -37,6 +37,10 @@ public class Conversation {
 	@JsonIgnore
     @OneToMany(mappedBy = "conversationId")
     private List<ChatUser> chatUser;
+	
+	@JsonIgnore
+    @OneToMany(mappedBy = "conversationId")
+    private List<ChatGroup> Group;
     
     private Date createdAt;
     

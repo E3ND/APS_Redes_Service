@@ -252,7 +252,7 @@ public class ChatController {
 			        
 			    } catch (IOException e) {
 			        e.printStackTrace();
-			        Response response = new Response(true, e.getMessage());
+			        Response response = new Response(true, "Erro ao fazer o upload da imagem => " + e.getMessage());
 			        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 			    }
 		    }

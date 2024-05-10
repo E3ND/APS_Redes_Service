@@ -6,4 +6,6 @@ public interface FindAllConversationByUserDto {
 	Long getSenderId();
 	Long getUserIdByRecipientId();
 	String getRecipientImageName();
+	String getSenderName();
+	String getRecipientName();
 }

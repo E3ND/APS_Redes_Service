@@ -168,7 +168,6 @@ public class UserLoginController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> create(@RequestBody @Valid User user) {
-
         
     	Optional<User> userExist = userRepository.findByEmail(user.getEmail());
     	

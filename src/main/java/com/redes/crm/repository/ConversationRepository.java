@@ -33,11 +33,13 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 	List<FindAllConversationsDto> findAllConversations(@Param("id") Long id);
 	
 	@Query(nativeQuery = true, value = "SELECT chatUser.conversation_id as 'conversationId', chat.message as 'lastMessage', chat.recipient_id as 'recipientId', chat.sender_id as 'senderId', "
-			+ "user.id as 'userIdByRecipientId', user.image_name as 'recipientImageName' "
+			+ "user.id as 'userIdByRecipientId', user.image_name as 'recipientImageName', sender.name AS 'senderName', recipient.name AS 'recipientName' "
 			+ "FROM javinha.chat_user chatUser "
 			+ "INNER JOIN javinha.conversation conversation ON conversation.id = chatUser.conversation_id "
 			+ "INNER JOIN javinha.chat chat ON chat.conversation_id = conversation.id "
 			+ "INNER JOIN javinha.user user ON chat.recipient_id = user.id "
+			+ "INNER JOIN javinha.user sender ON chat.sender_id = sender.id "
+			+ "INNER JOIN javinha.user recipient ON user.id = recipient.id "
 			+ "WHERE chatUser.user_id = :userId "
 			+ "AND chat.created_at = (SELECT MAX(c.created_at) FROM javinha.chat c WHERE c.conversation_id = chatUser.conversation_id)")
 	List<FindAllConversationByUserDto> findAllConversationByUser(@Param("userId") Long userId);

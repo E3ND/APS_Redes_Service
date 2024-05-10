@@ -34,6 +34,4 @@ public class ChatGroupCreateDto implements Serializable {
 	public void setImage(MultipartFile image) {
 		this.image = image;
 	}
-	
-	
 }

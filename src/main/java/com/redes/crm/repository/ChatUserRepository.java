@@ -20,4 +20,7 @@ public interface ChatUserRepository extends JpaRepository<ChatUser, Long> {
 			+ "INNER JOIN javinha.conversation conversation ON chatUser.conversation_id = conversation.id "
 			+ "WHERE chatUser.conversation_id = :conversationId")
 	List<FindChatUserByConversationDto> findChatUserByConversation(@Param("conversationId") Long conversationId);
+	
+//	@Query(nativeQuery = true, value =
+//	Optional<ChatUser> addUserGroup(@Param("conversationId") Long conversationId);
 }

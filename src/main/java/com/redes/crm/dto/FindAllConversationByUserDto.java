@@ -8,4 +8,5 @@ public interface FindAllConversationByUserDto {
 	String getRecipientImageName();
 	String getSenderName();
 	String getRecipientName();
+	Boolean getVisualize();
 }

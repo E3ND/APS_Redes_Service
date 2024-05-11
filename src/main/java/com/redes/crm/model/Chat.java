@@ -33,6 +33,9 @@ public class Chat {
 	@Column(name = "message", nullable = false)
 	private String message;
 	
+	@Column(name = "visualize", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+	private Boolean visualize;
+	
 	@ManyToOne
     @JoinColumn(name = "conversationId")
 	private Conversation conversationId;

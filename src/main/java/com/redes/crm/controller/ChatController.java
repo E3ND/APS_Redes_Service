@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,6 +55,39 @@ public class ChatController {
     private ConversationRepository conversationRepository;
     @Autowired
     private ChatUserRepository chatUserRepository;
+    
+    @Transactional
+    @PutMapping("/visualize/{messageId}")
+    public ResponseEntity<Object> visualizeMessage (@PathVariable Long messageId, @RequestHeader("Authorization") String token) {
+    	GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+		
+		TokenGenerate tokenGenerate = new TokenGenerate();
+		
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Long userId = tokenGenerate.extractUserId(existToken);
+		
+		Optional<User> user = userRepository.findById(userId);
+		
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, user.get());
+		
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		chatRepository.updateVisualize(messageId);
+		
+    	Response response = new Response(false, "Mudado com sucesso");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
     
     @GetMapping("/messages/{conversationId}")
     public ResponseEntity<Object> getAllMessagesConversation (@PathVariable Long conversationId, @RequestHeader("Authorization") String token) {

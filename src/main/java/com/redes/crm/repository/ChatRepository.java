@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,4 +22,8 @@ public interface ChatRepository extends JpaRepository<Chat, Long>{
 			+ "WHERE chat.conversation_id = :conversationId " 
 			+ "ORDER BY chat.created_at ASC")
 	List<FindAllmessagesOfConversationDto> findAllmessagesOfConversation(@Param("conversationId") Long conversationId);
+	
+	@Modifying
+	@Query(nativeQuery = true, value = "UPDATE javinha.chat SET chat.visualize = TRUE WHERE chat.id = :messageId")
+	void updateVisualize(@Param("messageId") Long messageId);
 }

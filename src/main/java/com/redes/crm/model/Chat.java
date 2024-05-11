@@ -113,6 +113,14 @@ public class Chat {
 	public void setImageName(String imageName) {
 		this.imageName = imageName;
 	}
+
+	public Boolean getVisualize() {
+		return visualize;
+	}
+
+	public void setVisualize(Boolean visualize) {
+		this.visualize = visualize;
+	}
 	
 	
 }

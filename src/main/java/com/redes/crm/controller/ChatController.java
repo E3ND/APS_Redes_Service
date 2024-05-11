@@ -292,6 +292,7 @@ public class ChatController {
 		    }
 			
 			Chat chatCreate = new Chat();
+			chatCreate.setVisualize(false);
 			chatCreate.setConversationId(conversation); 
 			chatCreate.setSenderId(user.get()); 
 			chatCreate.setRecipientId(recipient.get());
@@ -310,6 +311,7 @@ public class ChatController {
 			String imagePath = null;
 			
 			chatCreate.setConversationId(conversationId); 
+			chatCreate.setVisualize(false);
 			chatCreate.setSenderId(user.get()); 
 			chatCreate.setRecipientId(recipient.get());
 			chatCreate.setMessage(chatCreateMessagedto.getMessage());

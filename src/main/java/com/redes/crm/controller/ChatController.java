@@ -26,6 +26,7 @@ import com.redes.crm.dto.FindAllConversationsDto;
 import com.redes.crm.dto.FindAllmessagesOfConversationDto;
 import com.redes.crm.dto.FindByUserIdAndRecipientIdDto;
 import com.redes.crm.dto.FindChatUserByConversationDto;
+import com.redes.crm.dto.GetChatByUserIdDto;
 import com.redes.crm.dto.UpdateUserDto;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
@@ -55,6 +56,38 @@ public class ChatController {
     private ConversationRepository conversationRepository;
     @Autowired
     private ChatUserRepository chatUserRepository;
+    
+    @GetMapping("/messages/user/{otherUserId}")
+    public ResponseEntity<Object> getChatByUserId (@PathVariable Long otherUserId, @RequestHeader("Authorization") String token) {
+    	GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+		
+		TokenGenerate tokenGenerate = new TokenGenerate();
+		
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Long userId = tokenGenerate.extractUserId(existToken);
+		
+		Optional<User> user = userRepository.findById(userId);
+		
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, user.get());
+		
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Optional <GetChatByUserIdDto> conversation = chatUserRepository.getChatByUserId(userId, otherUserId);
+    	
+    	Response response = new Response(false, conversation);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
     
     @Transactional
     @PutMapping("/visualize/{messageId}")

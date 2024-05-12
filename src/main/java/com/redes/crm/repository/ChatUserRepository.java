@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.redes.crm.dto.FindChatUserByConversationDto;
 import com.redes.crm.dto.FindUserGroupDto;
+import com.redes.crm.dto.GetChatByUserIdDto;
 import com.redes.crm.dto.UserIsPresentGroupDto;
 import com.redes.crm.model.ChatUser;
 
@@ -31,4 +32,22 @@ public interface ChatUserRepository extends JpaRepository<ChatUser, Long> {
 	@Query(nativeQuery = true, value = "SELECT * FROM javinha.chat_user chatUser "
 			+ "WHERE chatUser.user_id = :userId AND chatUser.conversation_id = :conversationId")
 	Optional <UserIsPresentGroupDto> userIsPresentGroup(@Param("userId") Long userId, @Param("conversationId") Long conversationId);
+	
+	@Query(nativeQuery = true, value = "SELECT conversation.id AS 'conversationId', conversation.created_at AS 'conversationCreatedAt' FROM javinha.chat_user AS chatUser1 "
+			+ "INNER JOIN javinha.chat_user AS chatUser2 ON chatUser1.conversation_id = chatUser2.conversation_id "
+			+ "INNER JOIN javinha.conversation AS conversation ON conversation.id = chatUser1.conversation_id "
+			+ "WHERE chatUser1.user_id = :userId "
+			+ "AND chatUser2.user_id = :otherUserId "
+			+ "AND NOT EXISTS ( "
+			+ "    SELECT 1 "
+			+ "    FROM javinha.chat_user AS otherUser "
+			+ "    WHERE otherUser.conversation_id = chatUser1.conversation_id "
+			+ "    AND otherUser.user_id NOT IN (:userId, :otherUserId) "
+			+ ") "
+			+ "AND NOT EXISTS ( "
+			+ "    SELECT 1 "
+			+ "    FROM javinha.chat_group AS chatGroup "
+			+ "    WHERE chatGroup.conversation_id = chatUser1.conversation_id "
+			+ ")")
+	Optional <GetChatByUserIdDto> getChatByUserId(@Param("userId") Long userId, @Param("otherUserId") Long otherUserId);
 }

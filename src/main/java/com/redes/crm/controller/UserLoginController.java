@@ -190,7 +190,6 @@ public class UserLoginController {
             GenerateObjUser cenerateObjUser = new GenerateObjUser(newUser.getId(), newUser.getName(), newUser.getImageName(), responseToken);
             
             Response response = new Response(false, cenerateObjUser);
-            
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (DataIntegrityViolationException e) {
         	System.out.println("error => " + e);
@@ -260,11 +259,23 @@ public class UserLoginController {
 		    }
 	    }
 	    
-	    String hash = hashPassword.encodePassword(updateUserDto.getPassword());
+	    String hash = null;
+	    
+	    User newUser = userRepository.findUser(userId);
+	    
+	    TokenGenerate newToken = new TokenGenerate();
+	    
+	    if(updateUserDto.getPassword() != null) {
+		    hash = hashPassword.encodePassword(updateUserDto.getPassword());
+	    } else {
+	    	hash = newUser.getPassword();
+	    }	    
 	    
 	    userRepository.updateUser(userId, updateUserDto.getName(), hash, imagePath);
 	    
-	    Response response = new Response(false, "Atualizado com sucesso");
+	    String responseToken = newToken.generateToken(newUser);
+	    
+	    Response response = new Response(false, responseToken);
     	return ResponseEntity.status(HttpStatus.OK).body(response);	
 		
 	}

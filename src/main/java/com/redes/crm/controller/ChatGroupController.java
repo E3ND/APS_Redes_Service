@@ -28,6 +28,7 @@ import com.redes.crm.dto.FindGroupConversationDto;
 import com.redes.crm.dto.FindGroupUserDto;
 import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.FindUserGroupDto;
+import com.redes.crm.dto.GetMembersDto;
 import com.redes.crm.dto.UserIsPresentGroupDto;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
@@ -58,6 +59,37 @@ public class ChatGroupController {
     private ChatUserRepository chatUserRepository;
     @Autowired
     private ChatGroupReposittory chatGroupReposittory;
+    
+    @GetMapping("/members/{conversationId}")
+    public ResponseEntity<Object> getMembers (@PathVariable Long conversationId, @RequestHeader("Authorization") String token) {
+    	GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+		
+		TokenGenerate tokenGenerate = new TokenGenerate();
+		
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		
+		Long userId = tokenGenerate.extractUserId(existToken);
+		
+		Optional<User> user = userRepository.findById(userId);
+		
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, user.get());
+		
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+    	
+		List<GetMembersDto> members = chatGroupReposittory.getMembers(conversationId);
+    	
+    	Response response = new Response(false, members);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
     
     @GetMapping("/conversation/by-user")
     public ResponseEntity<Object> getConversationGroupByUser (@RequestHeader("Authorization") String token) {

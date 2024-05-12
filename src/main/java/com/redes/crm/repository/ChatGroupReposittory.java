@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.redes.crm.dto.GetMembersDto;
 import com.redes.crm.dto.FindGroupConversationDto;
 import com.redes.crm.dto.FindGroupUserDto;
 
@@ -33,4 +35,9 @@ public interface ChatGroupReposittory extends JpaRepository<ChatGroup, Long> {
 			+ "WHERE chatUser.user_id = :userId "
 			+ "AND chat.created_at = (SELECT MAX(c.created_at) FROM javinha.chat c WHERE c.conversation_id = chatUser.conversation_id)")
 	List<FindGroupUserDto> findGroupUser(@Param("userId") Long userId);
+	
+	@Query(nativeQuery = true, value = "SELECT chatUser.id AS 'chatUserId', user.id AS 'userId', user.name AS 'name', user.image_name AS 'userImageName' FROM javinha.chat_user chatUser "
+			+ "INNER JOIN javinha.user user ON user.id = chatUser.user_id "
+			+ "WHERE chatUser.conversation_id = :conversationId")
+	List<GetMembersDto> getMembers(@Param("conversationId") Long conversationId);
 }

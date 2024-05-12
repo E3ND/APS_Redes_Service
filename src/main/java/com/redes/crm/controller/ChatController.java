@@ -133,7 +133,7 @@ public class ChatController {
 		List<FindAllmessagesOfConversationDto> allMessagesOfConversation = chatRepository.findAllmessagesOfConversation(conversationId);
 		
 		Response response = new Response(false, allMessagesOfConversation);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
     @GetMapping("/conversation/by-user")

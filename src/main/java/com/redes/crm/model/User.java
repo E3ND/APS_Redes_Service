@@ -59,6 +59,10 @@ public class User {
     @OneToMany(mappedBy = "userId")
     private List<ChatUser> chatUser;
 	
+	@JsonIgnore
+    @OneToMany(mappedBy = "owner")
+    private List<ChatGroup> chatGroup;
+	
 	private String imageName;
     
     private Date createdAt;

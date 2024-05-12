@@ -41,6 +41,10 @@ public class ChatGroup {
 	private String imageName;
 	
     private Date createdAt;
+    
+    @ManyToOne
+    @JoinColumn(name = "owner")
+    private User owner;
 	
 	@ManyToOne
     @JoinColumn(name = "conversationId")
@@ -97,5 +101,13 @@ public class ChatGroup {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
 	}
 }

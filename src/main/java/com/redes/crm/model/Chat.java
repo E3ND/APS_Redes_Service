@@ -29,8 +29,7 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank
-	@Column(name = "message", nullable = false)
+	@Column(name = "message", nullable = true)
 	private String message;
 	
 	@Column(name = "visualize", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")

@@ -248,7 +248,7 @@ public class UserLoginController {
 		    	novaPasta.mkdir();
 		    	
 		        Path path = Paths.get("src/main/resources/static/images/perfil/user_" + String.valueOf(userId) + "/" + imageName);
-		        imagePath = "src/main/resources/static/images/perfil/user_" + String.valueOf(userId) + "/" + imageName;
+		        imagePath = "images/perfil/user_" + String.valueOf(userId) + "/" + imageName;
 		        
 		        Files.copy(updateUserDto.getImage().getInputStream(), path);
 		        

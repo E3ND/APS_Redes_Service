@@ -313,7 +313,7 @@ public class ChatController {
 			    	novaPasta.mkdir();
 			    	
 			        Path path = Paths.get("src/main/resources/static/images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName);
-			        imagePath = "src/main/resources/static/images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName;
+			        imagePath = "images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName;
 			        
 			        Files.copy(chatCreateMessagedto.getImage().getInputStream(), path);
 			        
@@ -343,13 +343,6 @@ public class ChatController {
 			
 			String imagePath = null;
 			
-			chatCreate.setConversationId(conversationId); 
-			chatCreate.setVisualize(false);
-			chatCreate.setSenderId(user.get()); 
-			chatCreate.setRecipientId(recipient.get());
-			chatCreate.setMessage(chatCreateMessagedto.getMessage());
-			chatCreate.setImageName(imagePath);
-			
 			if (chatCreateMessagedto.getImage() != null) {
 		    	try {
 			    	String imageNameFull = chatCreateMessagedto.getImage().getOriginalFilename();
@@ -362,7 +355,7 @@ public class ChatController {
 			    	novaPasta.mkdir();
 
 			        Path path = Paths.get("src/main/resources/static/images/chat_" + String.valueOf(conversationId.getId()) + "/" + imageName);
-			        imagePath = "src/main/resources/static/images/chat_" + String.valueOf(conversationId.getId()) + "/" + imageName;
+			        imagePath = "images/chat_" + String.valueOf(conversationId.getId()) + "/" + imageName;
 			        
 			        Files.copy(chatCreateMessagedto.getImage().getInputStream(), path);
 			        
@@ -372,6 +365,13 @@ public class ChatController {
 			        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 			    }
 		    }
+			
+			chatCreate.setConversationId(conversationId); 
+			chatCreate.setVisualize(false);
+			chatCreate.setSenderId(user.get()); 
+			chatCreate.setRecipientId(recipient.get());
+			chatCreate.setMessage(chatCreateMessagedto.getMessage());
+			chatCreate.setImageName(imagePath);
 			
 			chatRepository.save(chatCreate);
 			

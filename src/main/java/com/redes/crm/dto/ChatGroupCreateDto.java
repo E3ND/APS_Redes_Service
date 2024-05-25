@@ -9,7 +9,7 @@ public class ChatGroupCreateDto implements Serializable {
 	
 	private String description;
 	
-	private MultipartFile image;
+	private MultipartFile file;
 
 	public String getTitle() {
 		return title;
@@ -27,11 +27,11 @@ public class ChatGroupCreateDto implements Serializable {
 		this.description = description;
 	}
 
-	public MultipartFile getImage() {
-		return image;
+	public MultipartFile getFile() {
+		return file;
 	}
 
-	public void setImage(MultipartFile image) {
-		this.image = image;
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
 }

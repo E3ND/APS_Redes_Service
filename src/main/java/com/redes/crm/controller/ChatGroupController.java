@@ -223,9 +223,9 @@ public class ChatGroupController {
 		
 		String imagePath = null;
 
-		if (chatCreateMessagedto.getImage() != null) {
+		if (chatCreateMessagedto.getFile() != null) {
 	    	try {
-		    	String imageNameFull = chatCreateMessagedto.getImage().getOriginalFilename();
+		    	String imageNameFull = chatCreateMessagedto.getFile().getOriginalFilename();
 		    	int startPoint = imageNameFull.lastIndexOf('.');
 		    	String extendImage = imageNameFull.substring(startPoint + 1);
 		    	
@@ -235,9 +235,9 @@ public class ChatGroupController {
 		    	novaPasta.mkdir();
 		    	
 		        Path path = Paths.get("src/main/resources/static/images/group_" + String.valueOf(conversation.getId()) + "/" + imageName);
-		        imagePath = "src/main/resources/static/images/group_" + String.valueOf(conversation.getId()) + "/" + imageName;
+		        imagePath = "images/chat_" + String.valueOf(conversation.getId()) + "/" + imageName;
 		        
-		        Files.copy(chatCreateMessagedto.getImage().getInputStream(), path);
+		        Files.copy(chatCreateMessagedto.getFile().getInputStream(), path);
 		        
 		    } catch (IOException e) {
 		        e.printStackTrace();
@@ -331,7 +331,7 @@ public class ChatGroupController {
     }
 	
 	@PostMapping("/create")
-	public ResponseEntity<Object> CreateGropu (@ModelAttribute ChatGroupCreateDto chatGroupCreateDto, @RequestHeader("Authorization") String token) {
+	public ResponseEntity<Object> CreateGroup (@ModelAttribute ChatGroupCreateDto chatGroupCreateDto, @RequestHeader("Authorization") String token) {
 		GetTokenFormat getTokenFormat = new GetTokenFormat();
 
 		String existToken = getTokenFormat.cutToken(token);
@@ -368,9 +368,9 @@ public class ChatGroupController {
 		
 		String imagePath = null;
 		
-		if (chatGroupCreateDto.getImage() != null) {
+		if (chatGroupCreateDto.getFile() != null) {
 	    	try {
-		    	String imageNameFull = chatGroupCreateDto.getImage().getOriginalFilename();
+		    	String imageNameFull = chatGroupCreateDto.getFile().getOriginalFilename();
 		    	int startPoint = imageNameFull.lastIndexOf('.');
 		    	String extendImage = imageNameFull.substring(startPoint + 1);
 		    	
@@ -380,9 +380,9 @@ public class ChatGroupController {
 		    	novaPasta.mkdir();
 		    	
 		        Path path = Paths.get("src/main/resources/static/images/group_" + String.valueOf(consersationId.getId()) + "/" + imageName);
-		        imagePath = "src/main/resources/static/images/group_" + String.valueOf(consersationId.getId()) + "/" + imageName;
+		        imagePath = "images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName;
 		        
-		        Files.copy(chatGroupCreateDto.getImage().getInputStream(), path);
+		        Files.copy(chatGroupCreateDto.getFile().getInputStream(), path);
 		        
 		    } catch (IOException e) {
 		        e.printStackTrace();

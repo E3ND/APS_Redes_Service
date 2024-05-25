@@ -25,15 +25,19 @@ public interface ChatGroupReposittory extends JpaRepository<ChatGroup, Long> {
 			+ "WHERE user_id = :userId AND conversation_id = :conversationId")
 	void removeUserFromGroup(@Param("userId") Long userId, @Param("conversationId") Long conversationId);
 	
-	@Query(nativeQuery = true, value = "SELECT chatUser.conversation_id as 'conversationId', chat.message as 'lastMessage', chat.id AS 'chatId', chat.visualize AS 'visualize', chat.sender_id as 'senderId', "
-			+ "sender.id as 'userIdByRecipientId', sender.image_name as 'recipientImageName', sender.name AS 'senderName' "
+	@Query(nativeQuery = true, value = "SELECT chatUser.conversation_id as 'conversationId', chat.message as 'lastMessage', chat.id AS 'chatId', chat.visualize AS 'visualize', " 
+			+"chat.sender_id as 'senderId', sender.id as 'userIdByRecipientId', sender.image_name as 'recipientImageName', sender.name AS 'senderName', chatGroup.title AS 'groupName' "
 			+ "FROM javinha.chat_user chatUser "
 			+ "INNER JOIN javinha.conversation conversation ON conversation.id = chatUser.conversation_id "
-			+ "INNER JOIN javinha.chat_group chatGroup on chatGroup.conversation_id = conversation.id "
-			+ "INNER JOIN javinha.chat chat ON chat.conversation_id = conversation.id "
-			+ "INNER JOIN javinha.user sender ON chat.sender_id = sender.id "
-			+ "WHERE chatUser.user_id = :userId "
-			+ "AND chat.created_at = (SELECT MAX(c.created_at) FROM javinha.chat c WHERE c.conversation_id = chatUser.conversation_id)")
+			+ "LEFT JOIN javinha.chat_group chatGroup ON chatGroup.conversation_id = conversation.id "
+			+ "LEFT JOIN "
+			+ "    (SELECT * FROM javinha.chat c1 "
+			+ "     WHERE c1.created_at = (SELECT MAX(c2.created_at) "
+			+ "                            FROM javinha.chat c2 "
+			+ "                            WHERE c2.conversation_id = c1.conversation_id) "
+			+ "    ) chat ON chat.conversation_id = conversation.id "
+			+ "LEFT JOIN javinha.user sender ON chat.sender_id = sender.id "
+			+ "WHERE chatUser.user_id = :userId")
 	List<FindGroupUserDto> findGroupUser(@Param("userId") Long userId);
 	
 	@Query(nativeQuery = true, value = "SELECT chatUser.id AS 'chatUserId', user.id AS 'userId', user.name AS 'name', user.image_name AS 'userImageName' FROM javinha.chat_user chatUser "

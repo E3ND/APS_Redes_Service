@@ -9,4 +9,5 @@ public interface FindGroupUserDto {
 	Long getUserIdByRecipientId();
 	String getRecipientImageName();
 	String getSenderName();
+	String getGroupName();
 }

@@ -283,6 +283,8 @@ public class ChatController {
 		    }
 		    
 		}
+		
+		System.out.println("AAAAAAA ==> " + chatCreateMessagedto.getFile());
 
 		if(ThisMessageRecipientExist == false) {
 			Conversation conversation = new Conversation();
@@ -301,9 +303,9 @@ public class ChatController {
 			
 			String imagePath = null;
 			
-			if (chatCreateMessagedto.getImage() != null) {
+			if (chatCreateMessagedto.getFile() != null) {
 		    	try {
-			    	String imageNameFull = chatCreateMessagedto.getImage().getOriginalFilename();
+			    	String imageNameFull = chatCreateMessagedto.getFile().getOriginalFilename();
 			    	int startPoint = imageNameFull.lastIndexOf('.');
 			    	String extendImage = imageNameFull.substring(startPoint + 1);
 			    	
@@ -315,7 +317,7 @@ public class ChatController {
 			        Path path = Paths.get("src/main/resources/static/images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName);
 			        imagePath = "images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName;
 			        
-			        Files.copy(chatCreateMessagedto.getImage().getInputStream(), path);
+			        Files.copy(chatCreateMessagedto.getFile().getInputStream(), path);
 			        
 			    } catch (IOException e) {
 			        e.printStackTrace();
@@ -343,9 +345,9 @@ public class ChatController {
 			
 			String imagePath = null;
 			
-			if (chatCreateMessagedto.getImage() != null) {
+			if (chatCreateMessagedto.getFile() != null) {
 		    	try {
-			    	String imageNameFull = chatCreateMessagedto.getImage().getOriginalFilename();
+			    	String imageNameFull = chatCreateMessagedto.getFile().getOriginalFilename();
 			    	int startPoint = imageNameFull.lastIndexOf('.');
 			    	String extendImage = imageNameFull.substring(startPoint + 1);
 			    	
@@ -357,7 +359,7 @@ public class ChatController {
 			        Path path = Paths.get("src/main/resources/static/images/chat_" + String.valueOf(conversationId.getId()) + "/" + imageName);
 			        imagePath = "images/chat_" + String.valueOf(conversationId.getId()) + "/" + imageName;
 			        
-			        Files.copy(chatCreateMessagedto.getImage().getInputStream(), path);
+			        Files.copy(chatCreateMessagedto.getFile().getInputStream(), path);
 			        
 			    } catch (IOException e) {
 			        e.printStackTrace();

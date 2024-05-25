@@ -9,7 +9,7 @@ public class UpdateUserDto implements Serializable {
 
     private String password;
 
-    private MultipartFile image;
+    private MultipartFile file;
 
 	public String getName() {
 		return name;
@@ -27,12 +27,12 @@ public class UpdateUserDto implements Serializable {
 		this.password = password;
 	}
 
-	public MultipartFile getImage() {
-		return image;
+	public MultipartFile getFile() {
+		return file;
 	}
 
-	public void setImage(MultipartFile image) {
-		this.image = image;
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
     
     

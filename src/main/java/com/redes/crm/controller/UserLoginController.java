@@ -121,6 +121,15 @@ public class UserLoginController {
 		
 		List<FindAllDto> allUsers = userRepository.findAllUsers(); 
 		
+		for (int i = 0; i < allUsers.size(); i++) {
+			FindAllDto user = allUsers.get(i);
+			
+			if(user.getId() == userId) {
+				allUsers.remove(i);
+				break;
+			}
+		}
+		
 		 Response response = new Response(false, allUsers);
  		
  		return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -236,21 +245,21 @@ public class UserLoginController {
 	        arquivoImagem.delete();
 		}
 
-	    if (updateUserDto.getImage() != null) {
+	    if (updateUserDto.getFile() != null) {
 	    	try {
-		    	String imageNameFull = updateUserDto.getImage().getOriginalFilename();
+		    	String imageNameFull = updateUserDto.getFile().getOriginalFilename();
 		    	int startPoint = imageNameFull.lastIndexOf('.');
 		    	String extendImage = imageNameFull.substring(startPoint + 1);
 		    	
 		    	String imageName = updateUserDto.getName() + "_" + String.valueOf(userId) + "_" + System.currentTimeMillis() + "." + extendImage;
 		    	
-		    	File novaPasta = new File("src/main/resources/static/images/perfil/user_" + String.valueOf(userId));
+		    	File novaPasta = new File("src/main/resources/static/images/user_" + String.valueOf(userId));
 		    	novaPasta.mkdir();
 		    	
-		        Path path = Paths.get("src/main/resources/static/images/perfil/user_" + String.valueOf(userId) + "/" + imageName);
-		        imagePath = "src/main/resources/static/images/perfil/user_" + String.valueOf(userId) + "/" + imageName;
+		        Path path = Paths.get("src/main/resources/static/images/user_" + String.valueOf(userId) + "/" + imageName);
+		        imagePath = "images/user_" + String.valueOf(userId) + "/" + imageName;
 		        
-		        Files.copy(updateUserDto.getImage().getInputStream(), path);
+		        Files.copy(updateUserDto.getFile().getInputStream(), path);
 		        
 		    } catch (IOException e) {
 		        e.printStackTrace();

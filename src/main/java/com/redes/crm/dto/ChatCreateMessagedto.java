@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChatCreateMessagedto implements Serializable {
 	private String message;
 	
-	private MultipartFile image;
+	private MultipartFile file;
 
 	public String getMessage() {
 		return message;
@@ -17,11 +17,11 @@ public class ChatCreateMessagedto implements Serializable {
 		this.message = message;
 	}
 
-	public MultipartFile getImage() {
-		return image;
+	public MultipartFile getFile() {
+		return file;
 	}
 
-	public void setImage(MultipartFile image) {
-		this.image = image;
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
 }

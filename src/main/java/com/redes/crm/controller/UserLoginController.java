@@ -274,7 +274,7 @@ public class UserLoginController {
 	    
 	    TokenGenerate newToken = new TokenGenerate();
 	    
-	    if(updateUserDto.getPassword() != null) {
+	    if(updateUserDto.getPassword() != null && !updateUserDto.getPassword().isEmpty()) {
 		    hash = hashPassword.encodePassword(updateUserDto.getPassword());
 	    } else {
 	    	hash = newUser.getPassword();

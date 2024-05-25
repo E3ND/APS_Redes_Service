@@ -22,17 +22,17 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	Optional<User> findById(Long id);
 	
 	@Modifying
-	@Query(nativeQuery = true, value = "UPDATE javinha.user SET user.name = :name, user.password = :password, user.image_name = :imageName "
+	@Query(nativeQuery = true, value = "UPDATE railway.user SET user.name = :name, user.password = :password, user.image_name = :imageName "
 			+ "WHERE user.id = :id")
 	void updateUser(@Param("id") Long id, @Param("name") String name, @Param("password") String password, @Param("imageName") String imageName);
 
 	@Query(nativeQuery = true, value = "SELECT user.id as 'id', user.email as 'email', user.name as 'name', user.image_name as 'imageName', " 
-			+ "user.created_at as 'createdAt' FROM javinha.user user")
+			+ "user.created_at as 'createdAt' FROM railway.user user")
 	List<FindAllDto> findAllUsers();
 	
-	@Query(nativeQuery = true, value = "SELECT u.id as 'id', u.name as 'name', u.email as 'email', u.image_name as 'imageName', u.created_at as 'createdAt' FROM javinha.user AS u WHERE u.id = :userId")
+	@Query(nativeQuery = true, value = "SELECT u.id as 'id', u.name as 'name', u.email as 'email', u.image_name as 'imageName', u.created_at as 'createdAt' FROM railway.user AS u WHERE u.id = :userId")
 	List<FindUserByIdDto> findUserById(@Param("userId") Long userId);
 	
-	@Query(nativeQuery = true, value = "SELECT * FROM javinha.user AS user WHERE user.id = :userId")
+	@Query(nativeQuery = true, value = "SELECT * FROM railway.user AS user WHERE user.id = :userId")
 	User findUser(@Param("userId") Long userId);
 }

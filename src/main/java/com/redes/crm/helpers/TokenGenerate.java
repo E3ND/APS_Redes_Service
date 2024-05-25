@@ -36,10 +36,8 @@ import java.util.Map;
 public class TokenGenerate {
     private Key key;
     
-    //Colocar isso em env depois
     private static final String SECRET_KEY = "OpI3TaszkA8h6xJkNokRXHFpM7s5TdDzmGWg1YVJPz57lWWLvpmMhmsF9rmIm5U8PM8tr4Xk6E9Bm0ed8H592wJX9bqolPdiACni6sccm1f7o6ejyud8Xid0pGtLIF4Z13qsec7vtuK9zpmspCBMzPlk4nabJuwUfyPykZlSsFPdym5XE3KuxGR3KJW7PgKYFqewgzh7";
 
-    //Colocar isso em env depois
     private static final long EXPIRATION_TIME = 86400000; 
     
     @PostConstruct

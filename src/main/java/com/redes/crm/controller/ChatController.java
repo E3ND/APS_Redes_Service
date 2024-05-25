@@ -283,8 +283,6 @@ public class ChatController {
 		    }
 		    
 		}
-		
-		System.out.println("AAAAAAA ==> " + chatCreateMessagedto.getFile());
 
 		if(ThisMessageRecipientExist == false) {
 			Conversation conversation = new Conversation();

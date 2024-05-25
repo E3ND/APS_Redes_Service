@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.redes.crm.dto.BuildUserDto;
 import com.redes.crm.dto.FindAllDto;
 import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.UpdateUserDto;
@@ -282,7 +283,16 @@ public class UserLoginController {
 	    
 	    userRepository.updateUser(userId, updateUserDto.getName(), hash, imagePath);
 	    
-	    String responseToken = newToken.generateToken(newUser);
+	    updateUserDto.setPassword(hash);
+	    
+	    User buildUserDto = new User();
+
+	    buildUserDto.setId(newUser.getId());
+	    buildUserDto.setEmail(newUser.getEmail());
+	    buildUserDto.setName(updateUserDto.getName());
+	    buildUserDto.setImageName(imagePath);
+	    
+	    String responseToken = newToken.generateToken(buildUserDto);
 	    
 	    Response response = new Response(false, responseToken);
     	return ResponseEntity.status(HttpStatus.OK).body(response);	

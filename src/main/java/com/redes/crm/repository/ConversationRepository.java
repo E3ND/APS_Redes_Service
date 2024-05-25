@@ -21,7 +21,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 		    + "WHERE chatUser.user_id = :userId OR chatUser.user_id = :recipientId")
 	List<FindByUserIdAndRecipientIdDto> findByUserIdAndRecipientId(@Param("userId") Long userId, @Param("recipientId") Long recipientId);
 	
-	@Query(nativeQuery = true, value = "SELECT * FROM Conversation conversation WHERE conversation.id = :id")
+	@Query(nativeQuery = true, value = "SELECT * FROM railway.conversation conversation WHERE conversation.id = :id")
 	Conversation findConversationById(@Param("id") Long id);
 	
 	@Query(nativeQuery = true, value = "SELECT conversation.id as 'conversationId', chatUser.user_id as 'userId', chat.recipient_id as 'recipientId', chat.sender_id as 'senderId' " 

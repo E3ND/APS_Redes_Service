@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ import com.redes.crm.dto.AddUserGroupDto;
 import com.redes.crm.dto.ChatCreateMessagedto;
 import com.redes.crm.dto.ChatGroupCreateDto;
 import com.redes.crm.dto.FindGroupConversationDto;
+import com.redes.crm.dto.FindGroupUserAlterDto;
 import com.redes.crm.dto.FindGroupUserDto;
 import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.FindUserGroupDto;
@@ -117,9 +119,26 @@ public class ChatGroupController {
 		}
 		
 		List<FindGroupUserDto> findAllConversationGroupByUser = chatGroupReposittory.findGroupUser(userId);
-    	
-    	Response response = new Response(false, findAllConversationGroupByUser);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+		List<FindGroupUserAlterDto> modifiedList = new ArrayList<>();
+
+		for (FindGroupUserDto dto : findAllConversationGroupByUser) {
+		    FindGroupUserAlterDto mutableDto = new FindGroupUserAlterDto();
+		    mutableDto.setConversationId(dto.getConversationId());
+		    mutableDto.setLastMessage(dto.getLastMessage());
+		    mutableDto.setChatId(dto.getChatId());
+		    mutableDto.setSenderId(dto.getSenderId());
+		    mutableDto.setUserIdByRecipientId(dto.getUserIdByRecipientId());
+		    mutableDto.setRecipientImageName(dto.getRecipientImageName());
+		    mutableDto.setSenderName(dto.getSenderName());
+		    mutableDto.setGroupName(dto.getGroupName());
+
+		    mutableDto.setVisualize(dto.getVisualize() == 1);
+
+		    modifiedList.add(mutableDto);
+		}
+
+		Response response = new Response(false, modifiedList);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
     @Transactional

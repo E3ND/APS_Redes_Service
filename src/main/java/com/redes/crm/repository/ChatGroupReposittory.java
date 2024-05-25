@@ -25,19 +25,23 @@ public interface ChatGroupReposittory extends JpaRepository<ChatGroup, Long> {
 			+ "WHERE user_id = :userId AND conversation_id = :conversationId")
 	void removeUserFromGroup(@Param("userId") Long userId, @Param("conversationId") Long conversationId);
 	
-	@Query(nativeQuery = true, value = "SELECT chatUser.conversation_id as 'conversationId', chat.message as 'lastMessage', chat.id AS 'chatId', chat.visualize AS 'visualize', " 
-			+"chat.sender_id as 'senderId', sender.id as 'userIdByRecipientId', sender.image_name as 'recipientImageName', sender.name AS 'senderName', chatGroup.title AS 'groupName' "
-			+ "FROM javinha.chat_user chatUser "
-			+ "INNER JOIN javinha.conversation conversation ON conversation.id = chatUser.conversation_id "
-			+ "LEFT JOIN javinha.chat_group chatGroup ON chatGroup.conversation_id = conversation.id "
-			+ "LEFT JOIN "
-			+ "    (SELECT * FROM javinha.chat c1 "
-			+ "     WHERE c1.created_at = (SELECT MAX(c2.created_at) "
-			+ "                            FROM javinha.chat c2 "
-			+ "                            WHERE c2.conversation_id = c1.conversation_id) "
-			+ "    ) chat ON chat.conversation_id = conversation.id "
-			+ "LEFT JOIN javinha.user sender ON chat.sender_id = sender.id "
-			+ "WHERE chatUser.user_id = :userId")
+	@Query(nativeQuery = true, value = "SELECT "
+	        + "chatUser.conversation_id AS 'conversationId', "
+	        + "COALESCE(chat.message, '') AS 'lastMessage', "
+	        + "COALESCE(chat.id, 0) AS 'chatId', "
+	        + "COALESCE(chat.visualize, 0) AS 'visualize', " 
+	        + "COALESCE(chat.sender_id, 0) AS 'senderId', "
+	        + "COALESCE(sender.id, 0) AS 'userIdByRecipientId', "
+	        + "COALESCE(sender.image_name, '') AS 'recipientImageName', "
+	        + "COALESCE(sender.name, '') AS 'senderName', "
+	        + "COALESCE(chatGroup.title, '') AS 'groupName' "
+	        + "FROM javinha.chat_user chatUser "
+	        + "INNER JOIN javinha.conversation conversation ON conversation.id = chatUser.conversation_id "
+	        + "INNER JOIN javinha.chat_group chatGroup ON chatGroup.conversation_id = conversation.id "
+	        + "LEFT JOIN (SELECT * FROM javinha.chat c1 WHERE c1.created_at = (SELECT MAX(c2.created_at) FROM javinha.chat c2 "
+	        + "WHERE c2.conversation_id = c1.conversation_id)) chat ON chat.conversation_id = conversation.id "
+	        + "LEFT JOIN javinha.user sender ON chat.sender_id = sender.id "
+	        + "WHERE chatUser.user_id = :userId")
 	List<FindGroupUserDto> findGroupUser(@Param("userId") Long userId);
 	
 	@Query(nativeQuery = true, value = "SELECT chatUser.id AS 'chatUserId', user.id AS 'userId', user.name AS 'name', user.image_name AS 'userImageName' FROM javinha.chat_user chatUser "

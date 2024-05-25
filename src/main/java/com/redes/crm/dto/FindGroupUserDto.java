@@ -4,7 +4,7 @@ public interface FindGroupUserDto {
 	Long getConversationId();
 	String getLastMessage();
 	Long getChatId();
-	Boolean getVisualize();
+	int getVisualize();
 	Long getSenderId();
 	Long getUserIdByRecipientId();
 	String getRecipientImageName();

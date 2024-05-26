@@ -35,6 +35,7 @@ import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.FindUserGroupDto;
 import com.redes.crm.dto.GetMembersDto;
 import com.redes.crm.dto.UserIsPresentGroupDto;
+import com.redes.crm.dto.driveDto.FileDetails;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;
@@ -106,26 +107,23 @@ public class ChatGroupController {
 		String imagePath = null;
 		
 		if (chatGroupCreateDto.getFile() != null) {
-	    	try {
-		    	String imageNameFull = chatGroupCreateDto.getFile().getOriginalFilename();
-		    	int startPoint = imageNameFull.lastIndexOf('.');
-		    	String extendImage = imageNameFull.substring(startPoint + 1);
-		    	
-		    	String imageName = "foto_de_capa_" + System.currentTimeMillis() + "." + extendImage;
-		    	
-		    	File novaPasta = new File("src/main/resources/static/images/group_" + String.valueOf(conversationId));
-		    	novaPasta.mkdir();
-		    	
-		        Path path = Paths.get("src/main/resources/static/images/group_" + String.valueOf(conversationId) + "/" + imageName);
-		        imagePath = "images/chat_" + String.valueOf(conversationId) + "/" + imageName;
-		        
-		        Files.copy(chatGroupCreateDto.getFile().getInputStream(), path);
-		        
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		        Response response = new Response(true, "Erro ao fazer o upload da imagem => " + e.getMessage());
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		    }
+		    GoogleDriveController googleDriveController = new GoogleDriveController();
+			
+			String tokenDrive = googleDriveController.RefreshToken();
+				
+			String imageNameFull = chatGroupCreateDto.getFile().getOriginalFilename();
+			int startPoint = imageNameFull.lastIndexOf('.');
+			String extendImage = imageNameFull.substring(startPoint + 1);
+				
+			String imageName = chatGroupCreateDto.getFile().getName() + "_" + String.valueOf("1") + "_" + System.currentTimeMillis() + "." + extendImage;
+				
+			String responseFileTemplateId = googleDriveController.createFileTemplate(tokenDrive, imageName);
+				
+			byte[] binario = googleDriveController.tranformFileInBinary(chatGroupCreateDto.getFile());
+				
+			FileDetails uploadFile = googleDriveController.uploadDriveFile(tokenDrive, responseFileTemplateId, binario);
+			
+			imagePath = "{\"id\": \"" + uploadFile.getId() + "\", \"extensao\": \"" + extendImage + "\"}";
 	    }
 		
 		conversationRepository.updateGroup(conversationId, chatGroupCreateDto.getTitle(), chatGroupCreateDto.getDescription(), imagePath);
@@ -325,26 +323,23 @@ public class ChatGroupController {
 		String imagePath = null;
 
 		if (chatCreateMessagedto.getFile() != null) {
-	    	try {
-		    	String imageNameFull = chatCreateMessagedto.getFile().getOriginalFilename();
-		    	int startPoint = imageNameFull.lastIndexOf('.');
-		    	String extendImage = imageNameFull.substring(startPoint + 1);
-		    	
-		    	String imageName = System.currentTimeMillis() + "." + extendImage;
-		    	
-		    	File novaPasta = new File("src/main/resources/static/images/group_" + String.valueOf(conversation.getId()));
-		    	novaPasta.mkdir();
-		    	
-		        Path path = Paths.get("src/main/resources/static/images/group_" + String.valueOf(conversation.getId()) + "/" + imageName);
-		        imagePath = "images/chat_" + String.valueOf(conversation.getId()) + "/" + imageName;
-		        
-		        Files.copy(chatCreateMessagedto.getFile().getInputStream(), path);
-		        
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		        Response response = new Response(true, "Erro ao fazer o upload da imagem => " + e.getMessage());
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		    }
+		    GoogleDriveController googleDriveController = new GoogleDriveController();
+			
+			String tokenDrive = googleDriveController.RefreshToken();
+				
+			String imageNameFull = chatCreateMessagedto.getFile().getOriginalFilename();
+			int startPoint = imageNameFull.lastIndexOf('.');
+			String extendImage = imageNameFull.substring(startPoint + 1);
+				
+			String imageName = chatCreateMessagedto.getFile().getName() + "_" + String.valueOf("1") + "_" + System.currentTimeMillis() + "." + extendImage;
+				
+			String responseFileTemplateId = googleDriveController.createFileTemplate(tokenDrive, imageName);
+				
+			byte[] binario = googleDriveController.tranformFileInBinary(chatCreateMessagedto.getFile());
+				
+			FileDetails uploadFile = googleDriveController.uploadDriveFile(tokenDrive, responseFileTemplateId, binario);
+			
+			imagePath = "{\"id\": \"" + uploadFile.getId() + "\", \"extensao\": \"" + extendImage + "\"}";
 	    }
 		
 		Chat chatCreate = new Chat();
@@ -470,26 +465,23 @@ public class ChatGroupController {
 		String imagePath = null;
 		
 		if (chatGroupCreateDto.getFile() != null) {
-	    	try {
-		    	String imageNameFull = chatGroupCreateDto.getFile().getOriginalFilename();
-		    	int startPoint = imageNameFull.lastIndexOf('.');
-		    	String extendImage = imageNameFull.substring(startPoint + 1);
-		    	
-		    	String imageName = "foto_de_capa_" + System.currentTimeMillis() + "." + extendImage;
-		    	
-		    	File novaPasta = new File("src/main/resources/static/images/group_" + String.valueOf(consersationId.getId()));
-		    	novaPasta.mkdir();
-		    	
-		        Path path = Paths.get("src/main/resources/static/images/group_" + String.valueOf(consersationId.getId()) + "/" + imageName);
-		        imagePath = "images/chat_" + String.valueOf(consersationId.getId()) + "/" + imageName;
-		        
-		        Files.copy(chatGroupCreateDto.getFile().getInputStream(), path);
-		        
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		        Response response = new Response(true, "Erro ao fazer o upload da imagem => " + e.getMessage());
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		    }
+		    GoogleDriveController googleDriveController = new GoogleDriveController();
+			
+			String tokenDrive = googleDriveController.RefreshToken();
+				
+			String imageNameFull = chatGroupCreateDto.getFile().getOriginalFilename();
+			int startPoint = imageNameFull.lastIndexOf('.');
+			String extendImage = imageNameFull.substring(startPoint + 1);
+				
+			String imageName = chatGroupCreateDto.getFile().getName() + "_" + String.valueOf("1") + "_" + System.currentTimeMillis() + "." + extendImage;
+				
+			String responseFileTemplateId = googleDriveController.createFileTemplate(tokenDrive, imageName);
+				
+			byte[] binario = googleDriveController.tranformFileInBinary(chatGroupCreateDto.getFile());
+				
+			FileDetails uploadFile = googleDriveController.uploadDriveFile(tokenDrive, responseFileTemplateId, binario);
+			
+			imagePath = "{\"id\": \"" + uploadFile.getId() + "\", \"extensao\": \"" + extendImage + "\"}";
 	    }
 		
 		chatGroup.setTitle(chatGroupCreateDto.getTitle());

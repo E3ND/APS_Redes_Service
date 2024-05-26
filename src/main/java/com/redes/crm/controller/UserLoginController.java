@@ -24,6 +24,7 @@ import com.redes.crm.dto.BuildUserDto;
 import com.redes.crm.dto.FindAllDto;
 import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.UpdateUserDto;
+import com.redes.crm.dto.driveDto.FileDetails;
 import com.redes.crm.helpers.GenerateObjUser;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.HashPassword;
@@ -247,26 +248,25 @@ public class UserLoginController {
 		}
 
 	    if (updateUserDto.getFile() != null) {
-	    	try {
-		    	String imageNameFull = updateUserDto.getFile().getOriginalFilename();
-		    	int startPoint = imageNameFull.lastIndexOf('.');
-		    	String extendImage = imageNameFull.substring(startPoint + 1);
-		    	
-		    	String imageName = updateUserDto.getName() + "_" + String.valueOf(userId) + "_" + System.currentTimeMillis() + "." + extendImage;
-		    	
-		    	File novaPasta = new File("src/main/resources/static/images/user_" + String.valueOf(userId));
-		    	novaPasta.mkdir();
-		    	
-		        Path path = Paths.get("src/main/resources/static/images/user_" + String.valueOf(userId) + "/" + imageName);
-		        imagePath = "images/user_" + String.valueOf(userId) + "/" + imageName;
-		        
-		        Files.copy(updateUserDto.getFile().getInputStream(), path);
-		        
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		        Response response = new Response(true, "Erro ao fazer o upload da imagem => " + e.getMessage());
-		        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		    }
+	    	GoogleDriveController googleDriveController = new GoogleDriveController();
+			
+			String tokenDrive = googleDriveController.RefreshToken();
+			
+			String imageNameFull = updateUserDto.getFile().getOriginalFilename();
+			int startPoint = imageNameFull.lastIndexOf('.');
+			String extendImage = imageNameFull.substring(startPoint + 1);
+			
+			String imageName = updateUserDto.getFile().getName() + "_" + String.valueOf("1") + "_" + System.currentTimeMillis() + "." + extendImage;
+			
+			String responseFileTemplateId = googleDriveController.createFileTemplate(tokenDrive, imageName);
+			
+			byte[] binario = googleDriveController.tranformFileInBinary(updateUserDto.getFile());
+			
+			FileDetails uploadFile = googleDriveController.uploadDriveFile(tokenDrive, responseFileTemplateId, binario);
+			
+			
+			
+			imagePath = "{\"id\": \"" + uploadFile.getId() + "\", \"extensao\": \"" + extendImage + "\"}";
 	    }
 	    
 	    String hash = null;

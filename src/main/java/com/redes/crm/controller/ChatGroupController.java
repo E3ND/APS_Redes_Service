@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.redes.crm.dto.AddUserGroupDto;
+import com.redes.crm.dto.BuildGroupData;
 import com.redes.crm.dto.ChatCreateMessagedto;
 import com.redes.crm.dto.ChatGroupCreateDto;
 import com.redes.crm.dto.FindChatGroup;
@@ -128,8 +129,16 @@ public class ChatGroupController {
 	    }
 		
 		conversationRepository.updateGroup(conversationId, chatGroupCreateDto.getTitle(), chatGroupCreateDto.getDescription(), imagePath);
+		
+		BuildGroupData buildGroupData = new BuildGroupData();
+		
+		buildGroupData.setConversationId(conversationId);
+		buildGroupData.setDescription(chatGroupCreateDto.getDescription());
+		buildGroupData.setImageName(imagePath);
+		buildGroupData.setTitle(chatGroupCreateDto.getTitle());
+		buildGroupData.setId(groupId.get().getChatGroupId());
     	
-    	Response response = new Response(false, "Ok");
+    	Response response = new Response(false, buildGroupData);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
@@ -203,6 +212,7 @@ public class ChatGroupController {
 		    mutableDto.setSenderName(dto.getSenderName());
 		    mutableDto.setGroupName(dto.getGroupName());
 		    mutableDto.setGroupDescription(dto.getGroupDescription());
+		    mutableDto.setGroupImage(dto.getGroupImage());
 
 		    mutableDto.setVisualize(dto.getVisualize() == 1);
 

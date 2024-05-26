@@ -11,4 +11,5 @@ public interface FindGroupUserDto {
 	String getSenderName();
 	String getGroupName();
 	String getGroupDescription();
+	String getGroupImage();
 }

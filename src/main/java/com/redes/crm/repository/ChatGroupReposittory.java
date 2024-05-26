@@ -35,6 +35,7 @@ public interface ChatGroupReposittory extends JpaRepository<ChatGroup, Long> {
 	        + "COALESCE(sender.image_name, '') AS 'recipientImageName', "
 	        + "COALESCE(sender.name, '') AS 'senderName', "
 	        + "COALESCE(chatGroup.title, '') AS 'groupName', "
+	        + "chatGroup.image_name AS 'groupImage', "
 	        + "chatGroup.description AS 'groupDescription' "
 	        + "FROM javinha.chat_user chatUser "
 	        + "INNER JOIN javinha.conversation conversation ON conversation.id = chatUser.conversation_id "

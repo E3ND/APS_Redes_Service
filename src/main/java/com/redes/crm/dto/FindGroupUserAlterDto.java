@@ -69,7 +69,7 @@ public class FindGroupUserAlterDto {
 		this.userIdByRecipientId = userIdByRecipientId;
 	}
 
-	public String getRecipientImageNam() {
+	public String getRecipientImageName() {
 		return recipientImageName;
 	}
 

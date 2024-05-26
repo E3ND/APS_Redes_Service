@@ -3,6 +3,7 @@ package com.redes.crm.controller;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,15 +27,15 @@ public class GoogleDriveController {
 
 	@Autowired
     private RestTemplate restTemplate = new RestTemplate();
-	
-	public String RefreshToken() {
+
+	public String RefreshToken(String refresh_token, String clientId, String clientSecret) {
 		String url = "https://oauth2.googleapis.com/token";
 		
 		RefreshToken refreshToken = new RefreshToken();
-		
-		refreshToken.setRefresh_token("1//04aovUVbEMEupCgYIARAAGAQSNwF-L9Ir_GZOpL7Ful8SsAaOrR8r96xwxqCdvboKTVn1nOhW8BCxNzfzKhqBSIZOSA3qh-J1TSg");
-		refreshToken.setClient_id("847233060309-h8b8behuqb1hhousurs8vd9jdi4hlimc.apps.googleusercontent.com");
-		refreshToken.setClient_secret("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");
+
+		refreshToken.setRefresh_token(refresh_token);
+		refreshToken.setClient_id(clientId);
+		refreshToken.setClient_secret(clientSecret);
 		refreshToken.setGrant_type("refresh_token");
 		
 		HttpHeaders headers = new HttpHeaders();

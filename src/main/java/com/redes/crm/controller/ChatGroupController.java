@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,6 +67,15 @@ public class ChatGroupController {
     @Autowired
     private ChatGroupReposittory chatGroupReposittory;
     
+    @Value("${REFRESH_TOKEN}")
+	String refresh_token;
+    
+	@Value("${CLIENT_ID}")
+	String clientId;
+	
+	@Value("${CLIENT_SECRET}")
+	String clientSecret;
+    
     @Transactional
 	@PutMapping("/update/{conversationId}")
     public ResponseEntity<Object> updateGroup (@ModelAttribute ChatGroupCreateDto chatGroupCreateDto, @PathVariable Long conversationId, @RequestHeader("Authorization") String token) {
@@ -109,7 +119,7 @@ public class ChatGroupController {
 		if (chatGroupCreateDto.getFile() != null) {
 		    GoogleDriveController googleDriveController = new GoogleDriveController();
 			
-			String tokenDrive = googleDriveController.RefreshToken();
+			String tokenDrive = googleDriveController.RefreshToken(refresh_token, clientId, clientSecret);
 				
 			String imageNameFull = chatGroupCreateDto.getFile().getOriginalFilename();
 			int startPoint = imageNameFull.lastIndexOf('.');
@@ -325,7 +335,7 @@ public class ChatGroupController {
 		if (chatCreateMessagedto.getFile() != null) {
 		    GoogleDriveController googleDriveController = new GoogleDriveController();
 			
-			String tokenDrive = googleDriveController.RefreshToken();
+			String tokenDrive = googleDriveController.RefreshToken(refresh_token, clientId, clientSecret);
 				
 			String imageNameFull = chatCreateMessagedto.getFile().getOriginalFilename();
 			int startPoint = imageNameFull.lastIndexOf('.');
@@ -467,7 +477,7 @@ public class ChatGroupController {
 		if (chatGroupCreateDto.getFile() != null) {
 		    GoogleDriveController googleDriveController = new GoogleDriveController();
 			
-			String tokenDrive = googleDriveController.RefreshToken();
+			String tokenDrive = googleDriveController.RefreshToken(refresh_token, clientId, clientSecret);
 				
 			String imageNameFull = chatGroupCreateDto.getFile().getOriginalFilename();
 			int startPoint = imageNameFull.lastIndexOf('.');

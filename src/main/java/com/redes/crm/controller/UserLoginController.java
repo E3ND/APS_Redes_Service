@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,15 @@ public class UserLoginController {
         this.userRepository = userRepository;
         this.hashPassword = hashPassword;
     }
+    
+    @Value("${REFRESH_TOKEN}")
+	String refresh_token;
+    
+	@Value("${CLIENT_ID}")
+	String clientId;
+	
+	@Value("${CLIENT_SECRET}")
+	String clientSecret;
     
     @GetMapping("/{id}")
     public ResponseEntity<Object> FindUserById (@PathVariable Long id, @RequestHeader("Authorization") String token) {
@@ -250,7 +260,7 @@ public class UserLoginController {
 	    if (updateUserDto.getFile() != null) {
 	    	GoogleDriveController googleDriveController = new GoogleDriveController();
 			
-			String tokenDrive = googleDriveController.RefreshToken();
+			String tokenDrive = googleDriveController.RefreshToken(refresh_token, clientId, clientSecret);
 			
 			String imageNameFull = updateUserDto.getFile().getOriginalFilename();
 			int startPoint = imageNameFull.lastIndexOf('.');
@@ -263,8 +273,6 @@ public class UserLoginController {
 			byte[] binario = googleDriveController.tranformFileInBinary(updateUserDto.getFile());
 			
 			FileDetails uploadFile = googleDriveController.uploadDriveFile(tokenDrive, responseFileTemplateId, binario);
-			
-			
 			
 			imagePath = "{\"id\": \"" + uploadFile.getId() + "\", \"extensao\": \"" + extendImage + "\"}";
 	    }

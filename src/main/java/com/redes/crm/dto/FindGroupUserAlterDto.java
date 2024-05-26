@@ -73,8 +73,8 @@ public class FindGroupUserAlterDto {
 		return recipientImageName;
 	}
 
-	public void setRecipientImageName(String recipientImageNam) {
-		this.recipientImageName = recipientImageNam;
+	public void setRecipientImageName(String recipientImageName) {
+		this.recipientImageName = recipientImageName;
 	}
 
 	public String getSenderName() {

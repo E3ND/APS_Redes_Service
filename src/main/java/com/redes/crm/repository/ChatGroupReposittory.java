@@ -46,7 +46,7 @@ public interface ChatGroupReposittory extends JpaRepository<ChatGroup, Long> {
 	        + "WHERE chatUser.user_id = :userId")
 	List<FindGroupUserDto> findGroupUser(@Param("userId") Long userId);
 	
-	@Query(nativeQuery = true, value = "SELECT chatUser.id AS 'chatUserId', user.id AS 'userId', user.name AS 'name', user.image_name AS 'userImageName' FROM javinha.chat_user chatUser "
+	@Query(nativeQuery = true, value = "SELECT chatUser.id AS 'chatUserId', user.id AS 'userId', user.name AS 'name', user.email AS 'email', user.image_name AS 'userImageName' FROM javinha.chat_user chatUser "
 			+ "INNER JOIN javinha.user user ON user.id = chatUser.user_id "
 			+ "WHERE chatUser.conversation_id = :conversationId")
 	List<GetMembersDto> getMembers(@Param("conversationId") Long conversationId);

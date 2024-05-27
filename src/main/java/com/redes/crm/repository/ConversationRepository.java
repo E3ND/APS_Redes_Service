@@ -12,6 +12,7 @@ import com.redes.crm.dto.FindAllConversationByUserDto;
 import com.redes.crm.dto.FindAllConversationsDto;
 import com.redes.crm.dto.FindByUserIdAndRecipientIdDto;
 import com.redes.crm.dto.FindChatGroup;
+import com.redes.crm.dto.GetMembersGroup;
 import com.redes.crm.model.ChatGroup;
 import com.redes.crm.model.Conversation;
 
@@ -54,4 +55,9 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 	@Query(nativeQuery = true, value = "UPDATE javinha.chat_group chatGroup SET chatGroup.title = :title, chatGroup.description = :description, chatGroup.image_name = :imageName "
 			+ "WHERE chatGroup.conversation_id = :conversationId ")
 	Integer updateGroup(@Param("conversationId") Long conversationId, @Param("title") String title, @Param("description") String description, @Param("imageName") String imageName);
+	
+	@Query(nativeQuery = true, value =  "SELECT conversation.id AS 'conversationId', chatUser.user_id AS 'userId' FROM javinha.conversation conversation "
+			+ "INNER JOIN javinha.chat_user chatUser on chatUser.conversation_id = conversation.id "
+			+ "WHERE conversation.id = :conversationId")
+	List<GetMembersGroup> findMembersGroup(@Param("conversationId") Long conversationId);
 }

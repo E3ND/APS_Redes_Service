@@ -362,7 +362,7 @@ public class ChatGroupController {
 		
 		chatRepository.save(chatCreate);
     	
-    	Response response = new Response(false, "Mensagem enviada");
+    	Response response = new Response(false, chatCreate);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     

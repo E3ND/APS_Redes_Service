@@ -28,7 +28,7 @@ import com.redes.crm.dto.UpdateUserDto;
 import com.redes.crm.dto.driveDto.FileDetails;
 import com.redes.crm.helpers.GenerateObjUser;
 import com.redes.crm.helpers.GetTokenFormat;
-//import com.redes.crm.helpers.HashPassword;
+import com.redes.crm.helpers.HashPassword;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;
 import com.redes.crm.model.Chat;
@@ -53,15 +53,15 @@ import java.io.File;
 @RestController
 @RequestMapping("/user")
 public class UserLoginController {
-//	private HashPassword hashPassword;
+	private HashPassword hashPassword;
 
     @Autowired
     private UserRepository userRepository;
     
-//    public UserLoginController(UserRepository userRepository, HashPassword hashPassword) {
-//        this.userRepository = userRepository;
-//        this.hashPassword = hashPassword;
-//    }
+    public UserLoginController(UserRepository userRepository, HashPassword hashPassword) {
+        this.userRepository = userRepository;
+        this.hashPassword = hashPassword;
+    }
     
     @Value("${REFRESH_TOKEN}")
 	String refresh_token;
@@ -160,8 +160,8 @@ public class UserLoginController {
     	
     	User existingUser = userExist.get();    	
     	
-//    	Boolean passwordMatch = hashPassword.matchPassword(user.getPassword(), existingUser.getPassword());
-    	Boolean passwordMatch = null;
+    	Boolean passwordMatch = hashPassword.matchPassword(user.getPassword(), existingUser.getPassword());
+    	
     	if(passwordMatch == false) {
     		Response response = new Response(true, "Email ou senha incorretos");
             
@@ -200,8 +200,8 @@ public class UserLoginController {
         try {
         	TokenGenerate token = new TokenGenerate();
 
-//        	String hash = hashPassword.encodePassword(user.getPassword());
-        	String hash = null;
+        	String hash = hashPassword.encodePassword(user.getPassword());
+        	
         	user.setPassword(hash);
         	
             User newUser = userRepository.save(user);
@@ -284,8 +284,7 @@ public class UserLoginController {
 	    TokenGenerate newToken = new TokenGenerate();
 	    
 	    if(updateUserDto.getPassword() != null && !updateUserDto.getPassword().isEmpty()) {
-//		    hash = hashPassword.encodePassword(updateUserDto.getPassword());
-		    hash = null;
+		    hash = hashPassword.encodePassword(updateUserDto.getPassword());
 	    } else {
 	    	hash = newUser.getPassword();
 	    }	    

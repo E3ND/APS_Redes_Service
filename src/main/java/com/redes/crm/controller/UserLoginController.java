@@ -25,6 +25,7 @@ import com.redes.crm.dto.BuildUserDto;
 import com.redes.crm.dto.FindAllDto;
 import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.UpdateUserDto;
+import com.redes.crm.dto.driveDto.FileDetails;
 import com.redes.crm.helpers.GenerateObjUser;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.HashPassword;

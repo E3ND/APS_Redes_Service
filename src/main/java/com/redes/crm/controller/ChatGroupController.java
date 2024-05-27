@@ -36,6 +36,7 @@ import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.FindUserGroupDto;
 import com.redes.crm.dto.GetMembersDto;
 import com.redes.crm.dto.UserIsPresentGroupDto;
+import com.redes.crm.dto.driveDto.FileDetails;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;

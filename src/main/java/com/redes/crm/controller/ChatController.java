@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.redes.crm.dto.FindAllConversationsDto;
 import com.redes.crm.dto.FindAllmessagesOfConversationDto;
@@ -29,6 +31,7 @@ import com.redes.crm.dto.FindByUserIdAndRecipientIdDto;
 import com.redes.crm.dto.FindChatUserByConversationDto;
 import com.redes.crm.dto.GetChatByUserIdDto;
 import com.redes.crm.dto.UpdateUserDto;
+import com.redes.crm.dto.driveDto.FileDetails;
 import com.redes.crm.helpers.GetTokenFormat;
 import com.redes.crm.helpers.Response;
 import com.redes.crm.helpers.TokenGenerate;

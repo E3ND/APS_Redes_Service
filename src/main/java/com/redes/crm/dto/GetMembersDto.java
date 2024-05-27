@@ -5,4 +5,5 @@ public interface GetMembersDto {
 	Long getUserId();
 	String getName();
 	String getUserImageName();
+	String getEmail();
 }

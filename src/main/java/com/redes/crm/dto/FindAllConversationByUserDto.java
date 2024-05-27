@@ -11,4 +11,5 @@ public interface FindAllConversationByUserDto {
 	Boolean getVisualize();
 	Long getChatId();
 	String getUserEmail();
+	String getSenderImageName();
 }

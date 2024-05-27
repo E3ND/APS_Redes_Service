@@ -11,4 +11,5 @@ public interface FindAllmessagesOfConversationDto {
 	Long getSenderId();
 	Date getCreatedAt();
 	Date getConversationCreatedAt();
+	String getSenderName();
 }

@@ -114,7 +114,7 @@ public class ChatGroupController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 		}
 		
-		String imagePath = null;
+		String imagePath = groupId.get().getImageName();
 		
 		if (chatGroupCreateDto.getFile() != null) {
 		    GoogleDriveController googleDriveController = new GoogleDriveController();

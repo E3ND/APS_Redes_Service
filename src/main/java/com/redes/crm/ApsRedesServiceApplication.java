@@ -12,10 +12,5 @@ public class ApsRedesServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ApsRedesServiceApplication.class, args);
 	}
-	
-	@Bean
-    public Dotenv dotenv() {
-        return Dotenv.configure().load();
-    }
 
 }

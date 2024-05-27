@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import com.redes.crm.dto.AddUserGroupDto;
 import com.redes.crm.dto.BuildGroupData;
 import com.redes.crm.dto.ChatCreateMessagedto;
 import com.redes.crm.dto.ChatGroupCreateDto;
+import com.redes.crm.dto.FindAllDto;
 import com.redes.crm.dto.FindChatGroup;
 import com.redes.crm.dto.FindGroupConversationDto;
 import com.redes.crm.dto.FindGroupUserAlterDto;
@@ -35,6 +37,7 @@ import com.redes.crm.dto.FindGroupUserDto;
 import com.redes.crm.dto.FindUserByIdDto;
 import com.redes.crm.dto.FindUserGroupDto;
 import com.redes.crm.dto.GetMembersDto;
+import com.redes.crm.dto.GetMembersGroup;
 import com.redes.crm.dto.UserIsPresentGroupDto;
 import com.redes.crm.dto.driveDto.FileDetails;
 import com.redes.crm.helpers.GetTokenFormat;
@@ -75,6 +78,54 @@ public class ChatGroupController {
 	
 	@Value("${CLIENT_SECRET}")
 	String clientSecret;
+	
+	@GetMapping("/get/not-members/{conversationId}")
+    public ResponseEntity<Object> getMembersGroup (@PathVariable Long conversationId, @RequestHeader("Authorization") String token) {
+		GetTokenFormat getTokenFormat = new GetTokenFormat();
+
+		String existToken = getTokenFormat.cutToken(token);
+
+		TokenGenerate tokenGenerate = new TokenGenerate();
+
+		boolean isValidTokenIntegrity = tokenGenerate.validateTokenIntegrity(existToken);
+		if(isValidTokenIntegrity == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+
+		Long userId = tokenGenerate.extractUserId(existToken);
+
+		Optional<User> user = userRepository.findById(userId);
+
+		boolean isValidTokenParams = tokenGenerate.validateTokenParams(existToken, user.get());
+
+		if(existToken == "Not found" || isValidTokenParams == false) {
+			Response response = new Response(true, "Token Inválido");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+
+		List<FindAllDto> allUsers = userRepository.findAllUsers(); 
+
+		List<GetMembersGroup> findMembersGroup = conversationRepository.findMembersGroup(conversationId);
+
+		List<Long> userIds = new ArrayList<>();
+
+		for (GetMembersGroup member : findMembersGroup) {
+		    userIds.add(member.getUserId());
+		}
+
+		Iterator<FindAllDto> iterator = allUsers.iterator();
+
+		while (iterator.hasNext()) {
+		    FindAllDto users = iterator.next();
+		    if (userIds.contains(users.getId())) {
+		        iterator.remove();
+		    }
+		}
+
+		Response response = new Response(false, allUsers);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
     
     @Transactional
 	@PutMapping("/update/{conversationId}")

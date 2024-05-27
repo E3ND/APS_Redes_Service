@@ -34,3 +34,4 @@ build/
 
 ### bin paste ###
 bin/
+src/main/resources/application.properties

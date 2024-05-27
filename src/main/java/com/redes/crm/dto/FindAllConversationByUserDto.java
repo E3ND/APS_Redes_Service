@@ -10,4 +10,5 @@ public interface FindAllConversationByUserDto {
 	String getRecipientName();
 	Boolean getVisualize();
 	Long getChatId();
+	String getUserEmail();
 }

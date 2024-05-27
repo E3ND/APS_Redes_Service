@@ -13,11 +13,23 @@ public class FindGroupUserAlterDto {
 	
 	private Long userIdByRecipientId;
 	
-	private String recipientImageNam;
+	private String recipientImageName;
 	
 	private String senderName;
 	
 	private String groupName;
+	
+	private String groupDescription;
+	
+	private String groupImage;
+
+	public String getGroupImage() {
+		return groupImage;
+	}
+
+	public void setGroupImage(String groupImage) {
+		this.groupImage = groupImage;
+	}
 
 	public Long getConversationId() {
 		return conversationId;
@@ -67,12 +79,12 @@ public class FindGroupUserAlterDto {
 		this.userIdByRecipientId = userIdByRecipientId;
 	}
 
-	public String getRecipientImageNam() {
-		return recipientImageNam;
+	public String getRecipientImageName() {
+		return recipientImageName;
 	}
 
-	public void setRecipientImageName(String recipientImageNam) {
-		this.recipientImageNam = recipientImageNam;
+	public void setRecipientImageName(String recipientImageName) {
+		this.recipientImageName = recipientImageName;
 	}
 
 	public String getSenderName() {
@@ -89,6 +101,14 @@ public class FindGroupUserAlterDto {
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+
+	public String getGroupDescription() {
+		return groupDescription;
+	}
+
+	public void setGroupDescription(String groupDescription) {
+		this.groupDescription = groupDescription;
 	}
 	
 	

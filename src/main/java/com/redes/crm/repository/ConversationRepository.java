@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.redes.crm.dto.FindAllConversationByUserDto;
 import com.redes.crm.dto.FindAllConversationsDto;
 import com.redes.crm.dto.FindByUserIdAndRecipientIdDto;
+import com.redes.crm.dto.FindChatGroup;
+import com.redes.crm.model.ChatGroup;
 import com.redes.crm.model.Conversation;
 
 
@@ -33,7 +36,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 	List<FindAllConversationsDto> findAllConversations(@Param("id") Long id);
 	
 	@Query(nativeQuery = true, value = "SELECT chatUser.conversation_id as 'conversationId', chat.message as 'lastMessage', chat.id AS 'chatId', chat.visualize AS 'visualize', chat.recipient_id as 'recipientId', chat.sender_id as 'senderId', "
-			+ "user.id as 'userIdByRecipientId', user.image_name as 'recipientImageName', sender.name AS 'senderName', recipient.name AS 'recipientName' "
+			+ "user.id as 'userIdByRecipientId', user.email AS 'userEmail', user.image_name as 'recipientImageName', sender.name AS 'senderName', recipient.name AS 'recipientName' "
 			+ "FROM railway.chat_user chatUser "
 			+ "INNER JOIN railway.conversation conversation ON conversation.id = chatUser.conversation_id "
 			+ "INNER JOIN railway.chat chat ON chat.conversation_id = conversation.id "
@@ -43,4 +46,12 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 			+ "WHERE chatUser.user_id = :userId "
 			+ "AND chat.created_at = (SELECT MAX(c.created_at) FROM railway.chat c WHERE c.conversation_id = chatUser.conversation_id)")
 	List<FindAllConversationByUserDto> findAllConversationByUser(@Param("userId") Long userId);
+	
+	@Query(nativeQuery = true, value = "SELECT chatGroup.id AS 'chatGroupId', chatGroup.image_name AS 'imageName' FROM railway.chat_group chatGroup WHERE chatGroup.conversation_id = :conversationId")
+	Optional<FindChatGroup> chatGroup(@Param("conversationId") Long conversationId);
+	
+	@Modifying
+	@Query(nativeQuery = true, value = "UPDATE railway.chat_group chatGroup SET chatGroup.title = :title, chatGroup.description = :description, chatGroup.image_name = :imageName "
+			+ "WHERE chatGroup.conversation_id = :conversationId ")
+	Integer updateGroup(@Param("conversationId") Long conversationId, @Param("title") String title, @Param("description") String description, @Param("imageName") String imageName);
 }

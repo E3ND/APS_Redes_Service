@@ -16,12 +16,12 @@ import com.redes.crm.model.ChatGroup;
 
 public interface ChatGroupReposittory extends JpaRepository<ChatGroup, Long> {
 
-	@Query(nativeQuery = true, value = "SELECT chatGroup.id AS 'id', chatGroup.owner AS 'owner' FROM railway.chat_group chatGroup "
+	@Query(nativeQuery = true, value = "SELECT chatGroup.id AS 'id', chatGroup.owner AS 'owner' FROM javinha.chat_group chatGroup "
 			+ "WHERE chatGroup.conversation_id = :conversationId")
 	Optional <FindGroupConversationDto> findGroupConversation(@Param("conversationId") Long conversationId);
 	
 	@Modifying
-	@Query(nativeQuery = true, value = "DELETE FROM railway.chat_user "
+	@Query(nativeQuery = true, value = "DELETE FROM javinha.chat_user "
 			+ "WHERE user_id = :userId AND conversation_id = :conversationId")
 	void removeUserFromGroup(@Param("userId") Long userId, @Param("conversationId") Long conversationId);
 	
@@ -37,17 +37,17 @@ public interface ChatGroupReposittory extends JpaRepository<ChatGroup, Long> {
 	        + "COALESCE(chatGroup.title, '') AS 'groupName', "
 	        + "chatGroup.image_name AS 'groupImage', "
 	        + "chatGroup.description AS 'groupDescription' "
-	        + "FROM railway.chat_user chatUser "
-	        + "INNER JOIN railway.conversation conversation ON conversation.id = chatUser.conversation_id "
-	        + "INNER JOIN railway.chat_group chatGroup ON chatGroup.conversation_id = conversation.id "
-	        + "LEFT JOIN (SELECT * FROM railway.chat c1 WHERE c1.created_at = (SELECT MAX(c2.created_at) FROM railway.chat c2 "
+	        + "FROM javinha.chat_user chatUser "
+	        + "INNER JOIN javinha.conversation conversation ON conversation.id = chatUser.conversation_id "
+	        + "INNER JOIN javinha.chat_group chatGroup ON chatGroup.conversation_id = conversation.id "
+	        + "LEFT JOIN (SELECT * FROM javinha.chat c1 WHERE c1.created_at = (SELECT MAX(c2.created_at) FROM javinha.chat c2 "
 	        + "WHERE c2.conversation_id = c1.conversation_id)) chat ON chat.conversation_id = conversation.id "
-	        + "LEFT JOIN railway.user sender ON chat.sender_id = sender.id "
+	        + "LEFT JOIN javinha.user sender ON chat.sender_id = sender.id "
 	        + "WHERE chatUser.user_id = :userId")
 	List<FindGroupUserDto> findGroupUser(@Param("userId") Long userId);
 	
-	@Query(nativeQuery = true, value = "SELECT chatUser.id AS 'chatUserId', user.id AS 'userId', user.name AS 'name', user.image_name AS 'userImageName' FROM railway.chat_user chatUser "
-			+ "INNER JOIN railway.user user ON user.id = chatUser.user_id "
+	@Query(nativeQuery = true, value = "SELECT chatUser.id AS 'chatUserId', user.id AS 'userId', user.name AS 'name', user.image_name AS 'userImageName' FROM javinha.chat_user chatUser "
+			+ "INNER JOIN javinha.user user ON user.id = chatUser.user_id "
 			+ "WHERE chatUser.conversation_id = :conversationId")
 	List<GetMembersDto> getMembers(@Param("conversationId") Long conversationId);
 }
